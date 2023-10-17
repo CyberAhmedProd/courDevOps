@@ -1,0 +1,1324 @@
+
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' /> 
+<style>
+pre{background:#F8F8FF; border:black dashed 1px; padding:6px}
+</style>
+
+# Index  
+
+* [Introduction](#intro) 
+       * [La bonne veille méthode ](#old_technique) 
+       * [Les systèmes de gestion de version centralisés](#CCVC) 
+       * [Les systèmes de gestion de version distribués](#DCVC) 
+       * [Dépôt et processus de modification ](#Depot) 
+       * [C'est beau tous ça mais pour les administrateurs ??](#for_admin) 
+* [Git](#git) 
+       * [Les trois états](#3_steps) 
+       * [Création d'un dépôt local (nouveau et récupération d'un dépôt existant)](#local_depot) 
+           * [Initialisation d'un nouveau dépôt local ](#init_depot) 
+           * [Récupération d'un dépôt existant ](#depot_distant) 
+       * [Configuration de git ](#client_setup_git) 
+           * [Configuration du nom d'utilisateur](#setup_username) 
+           * [Configuration de l'éditeur](#setup_editor) 
+       * [Manipulation du dépôt](#process_depot) 
+           * [Ajout ](#add_files) 
+           * [Ignore files](#ignore_files) 
+           * [Suppression et renommer ](#delete_file) 
+           * [Visualisation](#view) 
+           * [Retour arrière](#roll_back) 
+               * [Rectification du dernier commit](#change_last_commit) 
+                   * [Amend (correction du dernier commit)](#amend) 
+                   * [Annulation des modifications d'un fichier](#cancel_change) 
+               * [Reset](#reset) 
+               * [Revert](#revert) 
+               * [Checkout dans un commit passé ](#checkout_old_file) 
+       * [Manipulation de branche](#branch) 
+           * [Concept des branches ](#branch_concept) 
+               * [Création d'une branche](#create_branch) 
+               * [Changer de branche](#change_branche) 
+           * [Exemple d'utilisation des branches :](#demo_use_branche) 
+           * [Fusionner (merge) les branches](#merge_branch_simple) 
+           * [ Suppression d'une branche](#delete_branch) 
+           * [ Fusionner (merge) de branches non séquentiel](#merge_branch_comp) 
+           * [Gestion de conflit lors de la fusion ("merge")](#merge_conflit) 
+       * [Travailler avec un dépôt distant ](#work_remote_repo) 
+* [Fonctionnalité non traité ici](#other_feature) 
+* [Référence : ](#ref) 
+
+
+# <a name="intro" />Introduction
+
+Un logiciel de gestion de versions (ou VCS en anglais, pour Version Control System) est un logiciel qui permet de stocker un ensemble de fichiers en conservant la chronologie de toutes les modifications qui ont été effectuées dessus. Il permet notamment de retrouver les différentes versions d'un lot de fichiers connexes. Le système enregistre l'évolution d'un fichier ou d'un ensemble de fichiers au cours du temps de manière à ce qu'on puisse rappeler une version antérieure d'un fichier à tout moment.
+
+Il existe des logiciels et services de gestion de versions décentralisé (distribué) (ou DVCS en anglais, pour Distributed Version Control System). [Git](https://fr.wikipedia.org/wiki/Git) et [Mercurial](https://fr.wikipedia.org/wiki/Mercurial) sont deux exemples de logiciel de gestion de versions décentralisé et sont disponibles sur la plupart des systèmes Unix et Windows. Vous avez aussi des logiciel de gestion de version centralisé telle que [SVN](https://fr.wikipedia.org/wiki/Apache_Subversion) qui nécessite un serveur pour conserver les fichiers et assurer la gestion des conflits.
+
+Si vous êtes un dessinateur ou un développeur web, et que vous voulez conserver toutes les versions d'une image ou d'une mise en page (ce que vous souhaiteriez assurément), un système de gestion de version (VCS en anglais pour Version Control System) est un outil qu'il est très sage d'utiliser. Il vous permet de ramener un fichier à un état précédent, de ramener le projet complet à un état précédent, de visualiser les changements au cours du temps, de voir qui a modifié quelque chose qui pourrait causer un problème, qui a introduit un problème et quand, et plus encore. Utiliser un VCS signifie aussi généralement que si vous vous trompez ou que vous perdez des fichiers, vous pouvez facilement revenir à un état stable. De plus, vous obtenez tous ces avantages avec peu de travail additionnel.
+
+## <a name="old_technique" />La bonne veille méthode 
+
+La méthode historique pour la gestion de version est généralement de recopier les fichiers dans un autre répertoire (peut-être avec un nom incluant la date dans le meilleur des cas). Cette méthode est la plus courante parce que c'est la plus simple, mais c'est aussi la moins fiable. Il est facile d'oublier le répertoire dans lequel vous êtes et d'écrire accidentellement dans le mauvais fichier ou d'écraser des fichiers que vous vouliez conserver. 
+
+Cette méthode a plusieurs lacune, le fichier de "backup" est souvent copié dans un répertoire temporaire, donc parfois effacé lors de nettoyage du système de fichier. Si le fichier est mis à coté de l'original avec une date telle que __httpd.conf__ et  __httpd.conf-2015-06-06__ nous avons une prolifération de fichier dans un même répertoire ce qui ne facilite pas la visualisation des fichiers de configuration. Pire si nous n'avons pas la date et uniquement des extensions __.bak__ , __.bak2__, ... Nous n'avons pas une historique claire des changements réalisé dans le temps, ni qui à réalisé ces changements. Si je fais référence à qui, ce n'est pas uniquement pour pouvoir blâmer la personne mais comprendre l'origine du changement qui aujourd'hui me cause un problème.
+
+## <a name="CCVC" />Les systèmes de gestion de version centralisés
+
+Le problème majeur que les gens rencontrent est qu'ils ont besoin de collaborer avec des développeurs sur d'autres ordinateurs. Pour traiter ce problème, les systèmes de gestion de version centralisés (CVCS en anglais pour Centralized Version Control Systems) furent développés. Ces systèmes tels que CVS, Subversion, et Perforce, mettent en place un serveur central qui contient tous les fichiers sous gestion de version, et des clients qui peuvent extraire les fichiers de ce dépôt central. Pendant de nombreuses années, cela a été le standard pour la gestion de version .
+
+![VCS_centraliser](./imgs/CVCS-diag.png)
+
+Ce schéma offre de nombreux avantages par rapport à la gestion de version locale. Par exemple, chacun sait jusqu'à un certain point ce que tous les autres sont en train de faire sur le projet. Les administrateurs ont un contrôle fin des permissions et il est beaucoup plus facile d'administrer un CVCS que de gérer des bases de données locales.
+
+Cependant ce système a aussi de nombreux défauts. Le plus visible est le point unique de panne que le serveur centralisé représente. Si ce serveur est en panne pendant une heure, alors durant cette heure, aucun client ne peut collaborer ou **enregistrer les modifications** issues de son travail. Dès qu'on a tout l'historique d'un projet sauvegardé à un endroit unique, on prend le risque de tout perdre.
+
+## <a name="DCVC" />Les systèmes de gestion de version distribués
+
+C'est à ce moment que les systèmes de gestion de version distribués entrent en jeu (DVCS en anglais pour Distributed Version Control Systems). Dans un DVCS (tel que Git, Mercurial, Bazaar ou Darcs), les clients n'extraient plus seulement la dernière version d'un fichier, mais ils dupliquent complètement le   [dépôt](https://fr.wikipedia.org/wiki/D%C3%A9p%C3%B4t_%28informatique%29) . Ainsi, si le serveur disparaît et si les systèmes collaboraient via ce serveur, n'importe quel dépôt d'un des clients peut être copié sur le serveur pour le restaurer. Chaque extraction devient une sauvegarde complète de toutes les données .
+
+![DVCS-diag](./imgs/DVCS-diag.png)
+
+
+## <a name="Depot" />Dépôt et processus de modification 
+
+
+Les fichiers __versionnés__ sont mis à dispositions sur un [dépôt](https://fr.wikipedia.org/wiki/D%C3%A9p%C3%B4t_%28informatique%29), c'est-à-dire un espace de stockage public géré par un logiciel de gestion de versions.
+
+Pour pouvoir effectuer des modifications, le développeur doit d'abord faire une copie locale des fichiers qu'il souhaite modifier, ou de tout le dépôt. Selon les systèmes de gestion de version, certains fichiers peuvent être verrouillés ou protégés en écriture pour tout le monde, ou pour certaines personnes.
+
+Le développeur fait ces modifications et effectue ses premiers tests localement, indépendamment des modifications faites sur le dépôt du fait du travail simultané d'autres développeurs. Il doit ensuite faire un commit (une soumission), c'est-à-dire soumettre ses modifications, afin qu'elles soient enregistrées sur le dépôt. C'est là que peuvent apparaître des conflits entre ce que le développeur souhaite soumettre et les modifications effectuées depuis la dernière copie locale effectuée. Ces conflits doivent être résolus (merge) pour que le patch soit accepté sur le dépôt.
+
+
+## <a name="for_admin" />C'est beau tous ça mais pour les administrateurs ??
+
+Quand on parle de contrôleur de révision la littérature fait principalement référence à l'utilisation de se système pour les développeur. Pour l'administrateur système le besoin est identique , nous avons besoin de connaître :
+
+* l'historique d'un fichier 
+* quand ce dernier fut modifier 
+* quelle sont les différences entre la date T et T'
+* pourquoi le fichier fut modifier , par qui 
+* pouvoir revenir a un état de configuration antérieur pour une date donnée.
+
+Là où il peut y avoir une divergence principale est dans le fait que nous avons moins de risque de conflit de configuration, car moins de personne travaille sur les fichiers. De plus il est plus rare que nous soyons plusieurs à modifier les mêmes fichiers sur le serveur. Autre différence principale et gestion de version , nous restons souvent à la version 1 , principalement car il est moins pertinent de créer des version telle 1.2 ou 2.3 , bien que j'imagine que pour des systèmes plus volumineux le fait d'identifier la version du serveur avec la version du logiciel déployer peut être intéressant. 
+
+La centralisation des configurations n'est pas critique ou indispensable bien que ... Je m'explique , comme la configuration d'une machine est moins propagé que le code source d'une application le fait d'avoir la révision du code uniquement Localement sur la machine est moins critique . Par contre le fait de ne pas avoir de serveur de contrôleur de révision fait en sorte qu'il n'y a pas de copie du dépôt en dehors de celui sur le serveur. De plus si vous désirez vous y référé il est obligatoire de ce connecter sur la machine, voilà pourquoi je pense qu'avoir un serveur contenant les dépôts est intéressant sans être obligatoire ceci dépend de la taille de votre organisation. 
+
+Dans le reste de la démonstration je vais principalement uniquement utiliser un dépôt local sans serveur et à la fin je vais montré un exemple de serveur centralisé.
+
+
+# <a name="git" />Git
+
+La différence majeure entre Git et les autres VCS (Subversion et autres) réside dans la manière dont Git considère les données. Au niveau conceptuel, la plupart des autres VCS gèrent l'information comme une liste de modifications de fichiers. Ces systèmes (CVS, Subversion, Perforce, Bazaar et autres) considèrent l'information qu'ils gèrent comme une liste de fichiers et les modifications effectuées sur chaque fichier dans le temps, comme illustré .
+
+![rev-in-time-SVN.png](./imgs/rev-in-time-SVN.png)
+
+Git ne gère pas et ne stocke pas les informations de cette manière. À la place, Git pense ses données plus comme un instantané d'un mini système de fichiers. À chaque fois que vous validez ou enregistrez l'état du projet dans Git, il prend effectivement un instantané du contenu de votre espace de travail à ce moment et enregistre une référence à cet instantané. Pour être efficace, si les fichiers n'ont pas changé, Git ne stocke pas le fichier à nouveau, juste une référence vers le fichier original qui n'a pas été modifié. Git pense ses données plus à la manière ci-dessous.
+
+![rev-in-time-GIT.png](./imgs/rev-in-time-GIT.png)
+
+Dans Git, tout est vérifié par une somme de contrôle avant d'être stocké et par la suite cette somme de contrôle, signature unique, sert de référence. Cela signifie qu'il est impossible de modifier le contenu d'un fichier ou d'un répertoire sans que Git ne s'en aperçoive. Cette fonctionnalité est ancrée dans les fondations de Git et fait partie intégrante de sa philosophie. Vous ne pouvez pas perdre des données en cours de transfert ou corrompre un fichier sans que Git ne puisse le détecter.
+
+## <a name="3_steps" />Les trois états
+
+Git gère trois états dans lesquels les fichiers peuvent résider : **validé** , **modifié** et **indexé**. 
+
+* **Validé** signifie que les données sont stockées en sécurité dans votre base de données locale. 
+* **Modifié** signifie que vous avez modifié le fichier mais qu'il n'a pas encore été validé en base. 
+* **Indexé** signifie que vous avez marqué un fichier modifié dans sa version actuelle pour qu'il fasse partie du prochain instantané du projet.
+
+Ceci nous mène aux trois sections principales d'un projet Git : le répertoire Git, le répertoire de travail et la zone d'index.
+
+![local-operation.png](./imgs/local-operation.png)
+
+Le répertoire **.git** est l'endroit où Git stocke les méta-données et la base de données des objets de votre projet. C'est la partie la plus importante de Git, et c'est ce qui est copié lorsque vous clonez un dépôt depuis un autre ordinateur.
+
+Le répertoire de travail est une extraction unique d'une version du projet. Ces fichiers sont extraits depuis la base de données compressée dans le répertoire Git et placés sur le disque pour pouvoir être utilisés ou modifiés.
+
+La zone d'index est un simple fichier, généralement situé dans le répertoire Git, qui stocke les informations concernant ce qui fera partie du prochain instantané.
+
+L'utilisation standard de Git se passe comme suit :
+
+* vous modifiez des fichiers dans votre répertoire de travail ;
+* vous indexez les fichiers modifiés, ce qui ajoute des instantanés de ces fichiers dans la zone d'index ;
+* vous validez, ce qui a pour effet de basculer les instantanés des fichiers de l'index dans la base de données du répertoire Git.
+
+## <a name="local_depot" />Création d'un dépôt local (nouveau et récupération d'un dépôt existant)
+
+
+### <a name="init_depot" />Initialisation d'un nouveau dépôt local 
+
+Nous allons commencer avec la création d'un nouveau dépôt Git sur le système local. 
+
+1. Déplacez vous dans le répertoire qui contiendra le projet Git, ce dernier peut contenir ou non des fichiers 
+2. utilisez la commande **git init** pour initialisé le dépôt, ceci aura pour effet de créer un répertoire .git dans le répertoire courant contenant le squelette du dépôt car aucun fichier n'est versionné . ( si vous désirez savoir ce que contient ce répertoire en détail voir [les tripes de git](https://git-scm.com/book/fr/v1/Les-tripes-de-Git) )
+
+        $ git init 
+3. Nous allons ajouter des fichiers afin qu'il soit versionné nous allons utiliser la commande **git add**. 
+
+        $ git add *.c
+        $ git add README
+4. Une fois l'identification des fichiers à ajouter dans le contrôle de révision nous pousser cette information dans le dépôt Git , avec un message indiquant la raison de l'opération.
+
+        $ git commit –m 'version initiale du projet'
+
+### <a name="depot_distant" />Récupération d'un dépôt existant 
+
+Pour récupéré un dépôt existant nous devons utiliser la commande **git clone** , lors du clonage Git reçoit une copie de quasiment toutes les données dont le serveur dispose. Toutes les versions de tous les fichiers pour l'historique du projet sont téléchargées. Si le disque du serveur se corrompt, vous pouvez utiliser n'importe quel clone pour remettre le serveur dans l'état où il était au moment du clonage (vous pourriez perdre quelques paramètres du serveur, mais toutes les données sous gestion de version seraient récupérées. 
+
+Ceci est une particularité important car contrairement à un système de contrôle de révision centralisé quand nous allons interroger l'historique d'un fichier Git n'interroge pas le serveur centrale, mais consulte ça copie local.
+
+Passons à l'étape pratique avec la récupération du dépôt que j'utilise pour la préparation de cette formation disponible sur [GitHub](https://github.com/x3rus). 
+
+1. Vous positionnez dans un répertoire qui contiendra le dépôt
+2. Utilisation de la commande **git clone** pour faire l'extraction.
+
+        $ git clone https://github.com/x3rus/training.git
+3. Ceci aura pour effet de créer un répertoire training dans le répertoire courant, si vous désirez avoir un autre nom il faut passez en paramètre le nom du répertoire distant telle que démontré ci-dessous, ceci va créer le répertoire formation.
+
+        $ git clone https://github.com/x3rus/training.git formation
+4. Tous comme lors de l'initialisation du dépôt local vous aurez un répertoire **.git** dans le répertoire training ou formation contenant l'information du dépôt avec l'ensemble de l'historique des fichiers versionnés .
+
+Dans l'exemple ci-dessus je fais la démonstration avec un dépôt public la commande est équivalente lors de l'utilisation d'un dépôt privé , git clone vous demandera un nom d'utilisateur et mot de passe .
+
+## <a name="client_setup_git" />Configuration de git 
+
+Il y a 3 niveau de configuration :
+
+* Système / __system__ : Cette configuration est global pour l'ensemble de la machine pour tous les utilisateurs, le fichier de configuration est : **/etc/gitconfig**.
+* Globale / __global__ : Cette configuration est global pour l'utilisateur qui exécute __git__ , ceci s'applique pour l'ensemble des dépôts utilisé par l'utilisateur. Le fichier de configuration est : **~/.gitconfig**
+* Par dépôt : Tous les dépôt comprenne un fichier de configuration sous le répertoire **/path/repo/.git/config**.
+
+La lecture des fichiers de configuration est hiérarchique le plus spécifique à le dernier mot sur la valeur de la variable.
+Bien entendu pour être en mesure de modifier la configuration système il faut avoir les permissions sur le fichier dans le répertoire **etc**.
+
+Il est possible d'éditer directement le fichier ou d'utiliser la commande **git config**, dans la réalité ceci ressemble beaucoup à un mixe. Avec la commande **git config -l** je peux visualiser la configuration.
+
+Je ne vais pas couvrir en détail l'ensemble des configurations possible , je vous invite a consulter la documentation : [Personnalisation de Git](http://git-scm.com/book/fr/v1/Personnalisation-de-Git-Configuration-de-Git)
+
+### <a name="setup_username" />Configuration du nom d'utilisateur
+
+Une configuration classique et même requise par git est l'identification de l'utilisateur , nous allons donc voir comment configuration globalement pour l'utilisateur son nom d'usager et courriel. Pour ce faire nous utiliserons **git config --global**
+
+        $ git config --global user.name "Robert Nesta (Bob) Marley"
+        $ git config --global user.email Bob@x3rus.com
+
+Le résultat est la création du fichier dans __l'home__ de l'usager :
+
+        $ cat ~/.gitconfig
+        [user]  
+                email = Bob@x3rus.com
+                name = Robert Nesta (Bob) Marley
+
+        $ git config -l
+        user.email=Bob@x3rus.com
+        user.name=Robert Nesta (Bob) Marley
+
+Si je ne met pas l'identifiant **glocal** dans ce cas nous allons modifier la configuration du dépôt en cours d'utilisation, si je reprend le dépôt préalablement créé. Je vais me déplacer dans le répertoire du dépôt :
+
+        $ cd le_depot
+        $ git config -l
+        user.email=Bob@x3rus.com
+        user.name=Robert Nesta (Bob) Marley
+        core.repositoryformatversion=0
+        core.filemode=true
+        core.bare=false
+        core.logallrefupdates=true
+        $ git config user.name "John Doe"
+        $ git config -l
+        user.email=Bob@x3rus.com
+        user.name=Robert Nesta (Bob) Marley
+        core.repositoryformatversion=0
+        core.filemode=true
+        core.bare=false
+        core.logallrefupdates=true
+        user.name=John Doe
+
+Le nom de l'utilisateur ayant fait les __commits__ sera maintenant __John Doe__ au lieu de __Robert Nesta Marley__ uniquement pour ce dépôt , n'ayant pas redéfinie l'adresse courriel la valeur "globale" sera utilisé.
+
+### <a name="setup_editor" />Configuration de l'éditeur
+
+En plus de s'identifier il est important d'avoir son éditeur préféré ! Donc **VIM** ou **emacs**, nous nous battrons pour dire qui est le meilleur éditeur :P. Par défaut git choisi le bon , donc **VIM**, pour les personnes qui désire avoir emacs voici l'instruction :
+
+        $ git config --global core.editor emacs 
+
+Je vous invite fortement à regarder les autres options disponible sur la page : [Personnalisation de Git](http://git-scm.com/book/fr/v1/Personnalisation-de-Git-Configuration-de-Git)
+
+
+## <a name="process_depot" />Manipulation du dépôt
+
+Nous allons à présent voir comment utiliser concrètement le système **git** à l'aide d'exemple , ceci est une introduction, il est possible d'aller beaucoup plus loin, je vous invite si le sujet vous intéresse à poursuivre ...
+
+Je vais initialisé un nouveau dépôt et définir un fichier __README__ . 
+
+        $ mkdir demo-git 
+        $ ls -a 
+        .  ..
+        $ git init
+        Initialized empty Git repository in /home/bob/git/demo-git/.git/
+        $ ls -a 
+        .  ..  .git
+        $ echo " Demonstration de GIT " > README
+        $ git add README
+        $ git commit -m " Premier commit avec le fichier README explicatif"
+        [master (root-commit) f044b87]  Premier commit avec le fichier README explicatif
+         1 file changed, 1 insertion(+)
+         create mode 100644 README
+
+Voilà le premier commit avec un fichier Indexé .
+
+Nous allons voir le cycle de vie d'un fichier telle que représenté par l'image ci dessous .
+
+![git_files_status.png](./imgs/git_files_status.png)
+
+
+### <a name="add_files" />Ajout 
+
+Validons l'état du dépôt avec **git status**
+
+        $ git status
+        On branch master
+        nothing to commit, working directory clean
+
+Bon tous est parfait :D , comme le dit le message : **working directory clean**, pour la partie de la __branch__ on y reviendra plus tard.
+
+Si nous ajoutons un fichier le message sera différent nous indiquant que le nouveau fichier n'est pas révisionné.
+
+        $ echo "le nouveau Fichier, le README mais francais  " > README_FR
+        $ git status 
+        On branch master
+        Untracked files:
+          (use "git add <file>..." to include in what will be committed)
+
+              README_FR
+
+        nothing added to commit but untracked files present (use "git add" to track)
+
+Le système nous indique la présence du nouveau fichier mais que le dépôt ne conserve pas l'historique du fichier. Comme le message l'indique et comme nous l'avons déjà fait pour le fichier __README__ nous allons utiliser la commande **git add** pour faire l'ajout du fichier.
+
+        $ git add README_FR
+        $ git status
+        On branch master
+        Changes to be committed:
+         (use "git reset HEAD <file>..." to unstage)
+
+               new file:   README_FR
+
+À ce stade le fichier est indexé , en mode **staged** dans le diagramme présenté plus tôt , quand les fichiers seront validé **commit** alors se fichier sera placé dans le dépôt Git, avec l'ensemble des autre fichiers dans l'indexe ou __"stagé"__.
+
+Dans le cas d'un fichier déjà présent dans le dépôt telle que **README** si nous réalisons une modification dans le fichier et que nous affichons l'état du dépôt. 
+
+        $  echo "Une nouvelle ligne dans le README " >> README 
+        $ cat README
+        Demonstration de GIT 
+        Une nouvelle ligne dans le README 
+        $ git status 
+        On branch master
+        Changes to be committed:
+          (use "git reset HEAD <file>..." to unstage)
+
+                  new file:   README_FR
+
+        Changes not staged for commit:
+          (use "git add <file>..." to update what will be committed)
+          (use "git checkout -- <file>..." to discard changes in working directory)
+
+                  modified:   README
+
+Je ne vous ferai pas une traduction du message , en gros après avoir fait une modification sur un fichier pour le mettre en état indexé donc __stagé__ nous devrions réaliser la commande **git add** de nouveau sur le fichier. Ceci fera en sorte que le fichier **README** qui fut déjà révisionné lors de l'initialisation du dépôt sera mis dans l'état Indexé pour le __staging__ de la prochaine validation . Nous ferions donc :
+
+        $ git add README
+        $ git status 
+        On branch master
+        Changes to be committed:
+        (use "git reset HEAD <file>..." to unstage)
+
+             modified:   README
+             new file:   README_FR
+
+Nous allons valider **commit** les fichiers afin de bien voir la finalité des états des fichiers 
+
+        $ git commit -m " Une dremonstration de l'ajout de fichier et la modification de fichier "
+        [master 3bb562a]  Une dremonstration de l'ajout de fichier et la modification de fichier
+         2 files changed, 2 insertions(+)
+         create mode 100644 README_FR
+        $ git status 
+        On branch master
+        nothing to commit, working directory clean
+
+Retour à un dépôt propre car l'ensemble des fichiers placé dans l'état Indexé (__staging__) sont maintenant validé dans le dépôt Git.
+
+Je me doute ce que vous vous dites , c'est vraiment lourd d'être obligé de faire **git add** à chaque fois que je modifie un fichier pour le mettre dans l'index pour la prochain commit. Faut le voir comme un système de sécurité surtout si vous manipulez des fichiers __critiques__ de production. Effectivement si vous réalisez un modification de plusieurs fichiers , comme c'est le cas lors du développement applicatif cette opération peut être perçu comme fastidieuse .
+
+La solution est d'utiliser l'option **-a** lors de la validation  **commit**. Démonstration :
+
+        $ echo "Une nouvelle modification afin de demontrer l'option -a " >> README
+        bob@xerus:~/git/demo-git$ git status
+        On branch master
+        Changes not staged for commit:
+          (use "git add <file>..." to update what will be committed)
+          (use "git checkout -- <file>..." to discard changes in working directory)
+
+                modified:   README
+
+        no changes added to commit (use "git add" and/or "git commit -a")
+
+        $ git commit -a -m "Demontration que l'on est pas obliger de faire add pour les fichier modifier" 
+         [master 94e83f3] Demontration que l'on est pas obliger de faire add pour les fichier modifier
+         1 file changed, 1 insertion(+)
+
+**ATTENTION** : ceci ne fonctionne que si le fichier fut ajouté dans le dépôt sinon vous aurez un message d'erreur 
+
+        $ touch Un_nouveau_fichier
+        $ git status
+        On branch master
+        Untracked files:
+        (use "git add <file>..." to include in what will be committed)
+
+            Un_nouveau_fichier
+
+        nothing added to commit but untracked files present (use "git add" to track)
+        $ git commit -a -m " test d'ajout d'un nouveau fichier qui ne fut pas ajouter dans le depot"
+        On branch master
+        Untracked files:
+                   Un_nouveau_fichier
+
+        nothing added to commit but untracked files present
+        $ git status
+        On branch master
+        Untracked files:
+          (use "git add <file>..." to include in what will be committed)
+
+                Un_nouveau_fichier
+
+        nothing added to commit but untracked files present (use "git add" to track)
+
+
+Pour les personnes qui utilisent déjà Git maintenant vous savez pourquoi vous devez mettre l'option **-a** , vous le ferez maintenant en connaissance de cause pas uniquement parce que le message vous le suggère.
+
+
+### <a name="ignore_files" />Ignore files
+
+C'est sympathique que Git nous indique les fichiers qui ne sont pas indexé ou non révisionné, cependant il est possible que des fichiers se trouve dans le répertoire mais que l'on désire pas avoir dans le dépôt. Les raisons sont nombreuses , à commencer parce que l'on a pas envie :P ou c'est des fichiers qui sont généré lors de l'utilisation , telle que les fichiers __.swp__ de Vim , les fichiers __.so__  lors de la compilation du programmes ... 
+
+Pour corriger le problème nous pouvons définir un fichier nommé **.gitignore**, voici la structure:
+
+* **#** : pour définir des commentaires 
+* Utilisation des expressions régulière pour définir les fichiers
+* s'il y a utilisation du caractère **!** il est possible d'invalider les autres règles et donc de s'assurer que le fichier soit révisionné.
+* S'il y a un **/** à la fin ceci indique que l'on parle d'un répertoire
+
+Voici un exemple très simple si nous désirons ignorer les fichiers de type **.dtd**
+
+        $ touch data_generate.dtd
+        $ touch scrubble_data.dtd
+        $ git status
+        On branch master
+        Untracked files:
+          (use "git add <file>..." to include in what will be committed)
+
+                data_generate.dtd
+                scrubble_data.dtd
+        $ vim .gitignore
+        # Exclusion des fichier .dtd
+        *.dtd
+        $ git status
+        On branch master
+        Untracked files:
+          (use "git add <file>..." to include in what will be committed)
+
+            .gitignore
+
+        nothing added to commit but untracked files present (use "git add" to track)
+
+Nous n'avons plus la présence des fichiers __.dtd__, bien entendu nous avons le fichier **.gitignore** que l'on voudra probablement définir dans le dépôt car si le fichier est pertinent pour nous il l'ai probablement pour l'ensemble des collaborateurs .
+
+        $ git add .gitignore 
+        $ git status
+        On branch master
+        Changes to be committed:
+          (use "git reset HEAD <file>..." to unstage)
+
+                  new file:   .gitignore
+
+        $ git commit -m " Ajout du fichier pour ignorer , les fichiers generes"
+        [master 1b7ba93]  Ajout du fichier pour ignorer , les fichiers generes
+         1 file changed, 2 insertions(+)
+         create mode 100644 .gitignore
+        $ git status
+        On branch master
+         nothing to commit, working directory clean
+
+Voici un exemple d'un autre fichier **.gitignore** très instructif :
+
+        # un commentaire, cette ligne est ignorée
+        # pas de fichier .a
+        *.a
+        # mais suivre lib.a malgré la règle précédente
+        !lib.a
+        # ignorer uniquement le fichier AFAIRE à la racine du projet
+        /AFAIRE
+        # ignorer tous les fichiers dans le répertoire build
+        build/
+        # ignorer doc/notes.txt, mais pas doc/server/arch.txt
+        doc/*.txt
+        # ignorer tous les fichiers .txt sous le répertoire doc/
+        doc/**/*.txt
+
+
+### <a name="delete_file" />Suppression et renommer 
+
+Pour effacer un fichier de Git, vous devez l'éliminer des fichiers en suivi de version (plus précisément, l'effacer dans la zone d'index) puis valider. La commande **git rm** réalise cette action mais efface aussi ce fichier de votre copie de travail de telle sorte que vous ne le verrez pas réapparaître comme fichier non suivi en version à la prochaine validation.
+
+Démonstration, ajoutons un fichier pour le supprimer par la suite :
+
+        $ echo "Le mauvais contenu " >> un_mauvais_fichier
+        $ git add un_mauvais_fichier
+        git commit -m "ajout d'un fichier pour le supprimer "
+        [master 2b89a72] ajout d'un fichier pour le supprimer
+         1 file changed, 1 insertion(+)
+         create mode 100644 un_mauvais_fichier
+
+Procédons à la suppression :
+
+        $ git rm un_mauvais_fichier 
+        rm 'un_mauvais_fichier'
+        $ ls
+        README  README_FR  data_generate.dtd  scrubble_data.dtd
+        $ git status
+        On branch master
+        Changes to be committed:
+          (use "git reset HEAD <file>..." to unstage)
+
+                deleted:    un_mauvais_fichier
+        $ git commit -m " suppression d'un fichier "
+        [master 4df0865]  suppression d'un fichier
+         1 file changed, 1 deletion(-)
+         delete mode 100644 un_mauvais_fichier
+        $ git status
+        On branch master
+        nothing to commit, working directory clean
+
+
+Pour la récupération d'un fichier supprimé dans le dépôt mais qui finalement été importante nous le verrons plus tard , pour les gens pressé voir ici [Retour arrière](#roll_back) 
+
+À la différence des autres VCS, Git ne suit pas explicitement les mouvements des fichiers. Si vous renommez un fichier suivi par Git, aucune méta-donnée indiquant le renommage n'est stockée par Git. Néanmoins, Git est assez malin pour s'en apercevoir après coup — la détection de mouvement de fichier sera traitée plus loin.
+
+        $ git mv README_FR LISEZMOI  
+        $ git status
+        On branch master
+        Changes to be committed:
+          (use "git reset HEAD <file>..." to unstage)
+
+                  renamed:    README_FR -> LISEZMOI
+        $ git commit -m " Renommage de README_FR par LISEZMOI"
+        [master 41a1679]  Renommage de README_FR par LISEZMOI
+         1 file changed, 0 insertions(+), 0 deletions(-)
+         rename README_FR => LISEZMOI (100%)
+
+Bien entendu pour enregistrer cette modification vous devrez utiliser la commande **git commit** pour valider le changement.
+
+### <a name="view" />Visualisation
+
+L'avantage principale du système de gestion de contrôle de révision est de pouvoir visualiser dans le temps les modifications et de revenir en arrière. Nous venons de visualiser comment créer un dépôt, et valider nos modifications il est temps de visualiser nos modifications dans le temps. Afin de faire la démonstration, je vais utiliser un dépôt publique qui contient déjà plusieurs **commit** . Procédons avec le clonage du dépôt [glpi-nwipe https://github.com/x3rus/glpi-nwipe.git](https://github.com/x3rus/glpi-nwipe.git).
+
+        $ cd ~/git/
+        $ git clone https://github.com/x3rus/glpi-nwipe.git
+        Cloning into 'glpi-nwipe'...
+        remote: Counting objects: 77, done.
+        remote: Total 77 (delta 0), reused 0 (delta 0), pack-reused 77
+        Unpacking objects: 100% (77/77), done.
+        Checking connectivity... done.
+        $ cd glpi-nwipe
+
+Pour information ce dépôt est un ensemble de script qui permet avec un serveur __PXE__ de supprimer l'ensemble du contenu d'un disque dur avec __nwipe__ l'équivalent de l'application __dban__ puis change la configuration dans __GLPI__ afin que le statut de la machine soit conforme. Si vous voulez plus d'information nous pourrons en parler en dehors de cette formation.
+
+Nous allons maintenant utiliser la commande **git log** , pour visualiser l'ensemble des validations (**commit**) qui furent réalisés. Voici le résultat de la commande pour le dépôt __glpi-nwipe__ 
+
+        $ git log
+        commit 27b3d4550df9c8da87861fe68d2ab929319d83fe
+        Author: x3rus <Thomas.boutry@x3rus.com>
+        Date:   Wed May 27 16:05:30 2015 -0400
+
+                Update LICENSE.md
+        
+                Ajout de la licence
+
+        commit 349541d3272da9f1cf9845ccfe498c957801f1a1
+        Author: Thomas Boutry <thomas.boutry@x3rus.com>
+        Date:   Wed May 27 16:12:28 2015 -0400
+
+                ajustement de la documentation, il faut encore definir les instructions pour l'installation du serveur PXE ls!
+
+        commit 9c607e8dd1792c91bafa27947930ae714dd071ee
+        Author: Thomas Boutry <thomas.boutry@x3rus.com>
+        Date:   Wed May 27 15:58:06 2015 -0400
+
+                ajustement pour publication sur github
+
+        commit b1b5cdff8cac093101629c830851a4de2ab05ccf
+        Author: Thomas Boutry <thomas.boutry@x3rus.com>
+        Date:   Wed May 27 15:52:16 2015 -0400
+
+                Correction des print pour que ce soit compatible python3
+
+        commit ac0a04f1776fc8b83e7bf411dde3d5a315351fcd
+        Author: Thomas Boutry <thomas.boutry@x3rus.com>
+        Date:   Mon Mar 2 17:43:15 2015 -0500
+
+                Ajout de la documention pour la mise en place du setup
+
+        [ ... Trunqué ... ]
+        [ ... Trunqué ... ]
+
+Nous voyons l'ensemble des **commits** avec :
+
+* le nom de la personne qui fait la modification
+* La date du changement 
+* le commentaire que la personne a laissé lors de la validation
+* Un numéro d'identification du commit de 41 caractère
+
+Si l'on regarde l'ensemble du résultat on peu constater que le projet à commencer le décembre 9 2014 et le dernier commit date du mai 27 2015. 
+
+Il est possible de visualiser les fichiers qui furent modifiés lors de la validation (**commit**) avec les plus et les moins , avec l'argument **stat**
+
+        $ git log --stat
+        commit 27b3d4550df9c8da87861fe68d2ab929319d83fe
+        Author: x3rus <Thomas.boutry@x3rus.com>
+        Date:   Wed May 27 16:05:30 2015 -0400
+
+            Update LICENSE.md
+                
+        Ajout de la licence
+
+         LICENSE.md | 674 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+         1 file changed, 674 insertions(+)
+
+        commit 349541d3272da9f1cf9845ccfe498c957801f1a1
+        Author: Thomas Boutry <thomas.boutry@x3rus.com>
+        Date:   Wed May 27 16:12:28 2015 -0400
+
+            ajustement de la documentation , il faut encore definir les instructions pour l'installation du serveur PXE ls!
+
+         README             |  0
+         README.md          | 20 ++++++++++----------
+         Setup_DHCP.md      |  4 ++--
+         Setup_PXEserver.md | 11 +++++++++--
+         4 files changed, 21 insertions(+), 14 deletions(-)
+
+        [ ... Trunqué ... ]
+        [ ... Trunqué ... ]
+
+
+Allons encore plus loin avec l'ensemble des détails des modifications avec l'option **-p**, il est possible de passer un nombre pour n'afficher que le # validation (**commit**) .
+
+        $ git log -p 
+        [ ... Trunqué ... ]
+        [ ... Trunqué ... ]
+        commit 349541d3272da9f1cf9845ccfe498c957801f1a1
+        Author: Thomas Boutry <thomas.boutry@x3rus.com>
+        Date:   Wed May 27 16:12:28 2015 -0400
+
+             ajustement de la documentation , il faut encore definir les instructions pour l'installation du serveur PXE ls!
+
+        diff --git a/README b/README
+        deleted file mode 100644
+        index e69de29..0000000
+        diff --git a/README.md b/README.md
+             ajustement de la documentation , il faut encore definir les instructions pour l'installation du serveur PXE ls!
+
+        diff --git a/README b/README
+        deleted file mode 100644
+        index e69de29..0000000
+        diff --git a/README.md b/README.md
+        index d0d0253..064948b 100644
+        --- a/README.md
+        +++ b/README.md
+        @@ -2,26 +2,27 @@
+
+             French version available here : README-FR.md
+
+             -This script was originaly created when we had to wipe hundred computers and 
+             -update the inventory system (GLPI -> URL-project) with the new status. 
+             +This script was originally created when we had to wipe hundred computers and 
+             +update the inventory system (GLPI : http://www.glpi-project.org) with the new status. 
+
+             -We used the  dban cd (URL-project) for one or two computer it's ok , and manually updated the
+             -GLPI web site. 
+             +Boot with the  dban cd (http://www.dban.org) and manually updated GLPI, it's ok for 
+             +one or two computer but after ... 
+        [ ... Trunqué ... ]
+        [ ... Trunqué ... ]
+
+Ceci est pour la ligne de commande bien entendu il existe aussi des applications graphiques 
+
+* **gitk** : Version officiel de git , pas très beau mais efficace :D
+* **giggle** : Version de gnome  http://live.gnome.org/giggle
+* **gitg** : Autre Version de gnome http://wiki.gnome.org/Apps/Gitg
+
+Je ne dis pas que ceux nommé ci-dessus son les meilleurs pour le moment personnellement je n'utilise que **gitk** , si vous en connaissez d'autre agréable et surtout libre , n'hésitez pas à le partager avec moi :D.
+
+### <a name="roll_back" />Retour arrière
+
+Un autre point avantageux avec l'utilisation d'un gestionnaire de révision est le coté révision :P et la possibilité d'avoir un retour arrière. Ceci est un filet de sécurité important ! Je vous conseil fortement d'être confortable avec votre système de gestionnaire de révision pour les retour arrière, ceci sera un atout majeur pour vous.
+Bon fini le blabla on y va dans le vif du sujet.
+
+Débutons avec la visualisation de l'état de notre dépôt (__glpi-nwipe__):
+
+        $ git status
+        On branch master
+        Your branch is up-to-date with 'origin/master'.
+
+        nothing to commit, working directory clean
+
+Visualisons les derniers **commit**
+
+        $ git log --pretty=oneline
+        27b3d4550df9c8da87861fe68d2ab929319d83fe Update LICENSE.md
+        349541d3272da9f1cf9845ccfe498c957801f1a1  ajustement de la documentation , il faut encore definir les instructions pour l'inst
+        9c607e8dd1792c91bafa27947930ae714dd071ee  ajustement pour publication sur github
+
+Nous allons faire quelques modifications, pour manipuler le tous .
+
+#### <a name="change_last_commit" />Rectification du dernier commit
+
+##### <a name="amend" />Amend (correction du dernier commit)
+
+Commençons avec le correctif du dernier **commit**, dans le cas où vous réaliser un commit et que vous constatez que vous avec oublié un fichier ou que le commentaire est erroné. La commande **--amend** nous permet de rectifier le dernier commit.
+Voici un exemple d'utilisation sur le dépôt local de __glpi-nwipe__:
+
+        $ # Edition du fichier README.md
+        $ vim  README
+        $ git diff 
+        git diff
+        diff --git a/README.md b/README.md
+        index 064948b..8f74c4a 100644
+        --- a/README.md
+        +++ b/README.md
+        @@ -5,7 +5,7 @@ French version available here : README-FR.md
+        This script was originally created when we had to wipe hundred computers and
+        update the inventory system (GLPI : http://www.glpi-project.org) with the new status.
+    
+         -Boot with the  dban cd (http://www.dban.org) and manually updated GLPI, it's ok for 
+         +The original procedure was to boot with the  dban cd (http://www.dban.org) and manually updated GLPI, it's ok for 
+          one or two computer but after ...
+    
+          This script should be use with a PXE server, you boot the computer on the network and
+        $ git commit -a -m " Modification de README "
+        [master af2a818]  Modification de README
+         1 file changed, 1 insertion(+), 1 deletion(-)
+        $ git status
+        On branch master
+        Your branch is ahead of 'origin/master' by 1 commit.
+          (use "git push" to publish your local commits)
+    
+          nothing to commit, working directory clean
+
+Avec la commande **git commit --amend** je vais pourvoir **REFAIRE** mon __commit__ avec le nouveau contenu ça peut être juste pour modifier le commentaire de commit ou pour rajouter d'autre modification dans le dernier commit. Ceci est très intéressant car on est souvent porté à __commiter__ rapidement pour garder une trace. Ceci n'est plus un problème, car il est possible de rajouter de l'information sur le dernier __commit__.
+    **Note**: Ceci est possible sur le dépôt local , cependant une fois pousser sur un serveur distant ceci n'est pas possible.
+    
+##### <a name="cancel_change" />Annulation des modifications d'un fichier
+
+Autre situation très connu, on travail sur un fichier du dépôt puis finalement le résultat est pire qu'a l'origine :P. Il y a des jours comme ça, finalement on se dit le fichier d'origine été mieux. Il est possible **avant** de faire son __commit__ de reprendre le fichier original avec la commande **git checkout**.
+
+        $ vim README.md
+        $ head README.md
+        == Description ==
+    
+        Je rajouter du texte que je ne veux pas finalement mais je le sais pas encore 
+    
+        French version available here : README-FR.md
+        $ git status
+        [ ... COUPÉ ...]
+        modified:   README.md
+        [ ... COUPÉ ...]
+        $ git checkout README.md
+        $ git status
+        nothing to commit, working directory clean
+
+#### <a name="reset" />Reset
+
+Je vous suggère de ne pas utiliser la méthode __reset__ mais de toujours privilégier la méthode suivante __Revert__ , j'ai hésité à faire la démonstration de cette méthode. Finalement, est-ce à moi de juger par omission si une fonctionnalité doit être présenté ou non :D.
+
+Pour rappel git identifie chaque commit avec un **id** , nous pouvons voir dans le temps les modifications. 
+
+
+Lors de l'utilisation de la commande __reset__ nous indiquons à **git** de supprimer l'ensemble des __commit__ effectué pour ne conservé comme dernier __commit__ ( aussi appelé la tête **HEAD**) le commit fournit en paramètre. Si nous reprenons la représentation graphique ceci donne :
+
+<img src="./imgs/reset_avant_apres.svg" width="700px" />
+
+
+Pourquoi cette méthode est peu élégante ?? La raison principale et que nous perdons l'information sur l'historique des modifications . Si vous êtes seul sur le projet l'impact est probablement moins critique bien que dans 6 mois votre mémoire aura probablement oublié qu'une partie des modifications fut supprimer sans aucune trace.
+La méthode suivante __revert__ nous permet de conserver cette historique.
+
+Voici un exemple d'utilisation de **git reset** , voici un dépôt GIT , avec quelques 4 __commits__
+
+        $ git log --pretty=oneline
+        b520936b2fbd52666092c3ce1d88c99c1124c25c  ajout de A et B dans Fichier[AB]
+        6caacfa169041ab7b8055c56911e7c813cbc8694 modification des 3 fichiers
+        2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
+        84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
+
+Nous allons procéder à un **reset** pour annuler les modifications "ajout de A et B dans Fichier[AB]" ET "modification des 3 fichiers". Voici la commande et le résultat de l'opération :
+
+        $ git reset 2e1ce9386472407c2d2f15a2aa13532aa79ce2d7
+        Unstaged changes after reset:
+        M       FichierA
+        M       FichierB
+        M       FichierC
+        $ git log --pretty=oneline
+        2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
+        84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
+
+Comme vous pouvez le constater nous avons perdu TOUTES traces des explication des modifications , dans notre cas l'impact est de uniquement 2 __commits__ ceci est probablement moins critique mais sur 5 ou 6 __commits__ voir plus ceci être ennuyeux.
+Nous devons __commiter__ le changement pour qu'il soit tout de même inscrit dans l'historique.
+
+        $ git status -s         
+        M FichierA
+        M FichierB
+        M FichierC
+        $ git commit -a -m " Reset de plusieurs commits "
+        $ git log --pretty=oneline
+        bb6a8d445bd9d84479b47c1debd87b4208057490  Reset de plusieurs commits
+        2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
+        84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
+
+Bon voyons à présent **revert** si c'est vraiment mieux :P.
+
+#### <a name="revert" />Revert
+
+Le processus de __revert__ n'est pas tous à fait le même que __reset__ , comme son nom l'indique __reset__ réinitialiser l'ensemble du dépôt à un état dans le passé. L'instruction __revert__ nous permet non pas de réinitialiser un état mais de renverser / annuler un __commit__ particulier, ceci tous en conservant l'historique des modifications.
+
+
+<img src="./imgs/revert_avant_apres.svg" width="700px" />
+
+Voyons un exemple pour représenter le tout , je vais continuer avec le dépôt __git-demo__, j'ai réalisé quelques modifications pour les besoins voici le __git log__ :
+
+        $ git log --pretty=oneline
+        50dcb3cd131fe7d245cbc205d8d3e9776b556999  Modification du fichier A pour finaliser la demonstration
+        b7c6d7c50b4f0a79d1bd3a1a6ec33a1430792d41  Je modifie C pour avoir un autre com
+        40e85b5d1de8a77313f32780a8bc5347d1069219  Modif fichier B pour ajout info
+        bb6a8d445bd9d84479b47c1debd87b4208057490  Reset de plusieurs commits
+        2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
+        84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
+        $ git status
+        On branch master
+        nothing to commit, working directory clean
+
+Je désire renversé le __commit 40e85b5d1de8a77313f32780a8bc5347d1069219__ qui contient la modification du Fichier B, pour le plaisir nous allons visualisé le contenu :D. Nous regardons ce que contient le __commit (Reset de plusieurs commits)__  avec ce que contient le __commit  (Modif fichier B pour ajout info)__.
+
+        $ git diff bb6a8d445bd9d84479b47c1debd87b4208057490 40e85b5d1de8a77313f32780a8bc5347d1069219
+        diff --git a/FichierB b/FichierB
+        index 94c1267..f3ba53b 100644
+        --- a/FichierB
+        +++ b/FichierB
+        @@ -1,3 +1,6 @@
+        un fichier PAS nomme Fichier A
+        Ceci est le deuxieme fichier
+        B
+        +
+        +
+        +Modification du Fichier B pour ajout d'information 
+
+Je vais donc Renversé l'ajout des lignes identifier avec un + contenu dans **fichierB**.
+
+        $ git revert 40e85b5d1de8a77313f32780a8bc5347d1069219
+        [master cf4adb3] Revert " Modif fichier B pour ajout info"
+         1 file changed, 3 deletions(-)
+
+Nous voyons un nouveau commit qui comprend la suppression :
+
+        $ git log --pretty=oneline
+        cf4adb3ce6e6bf76429f88e5a53087cdc79407e8 Revert " Modif fichier B pour ajout info"
+        50dcb3cd131fe7d245cbc205d8d3e9776b556999  Modification du fichier A pour finaliser la demonstration
+        b7c6d7c50b4f0a79d1bd3a1a6ec33a1430792d41  Je modifie C pour avoir un autre com
+        40e85b5d1de8a77313f32780a8bc5347d1069219  Modif fichier B pour ajout info
+        bb6a8d445bd9d84479b47c1debd87b4208057490  Reset de plusieurs commits
+        2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
+        84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
+
+Si nous visualisons le fichier effectivement le contenu n'est plus présent et le différentiel du commit le confirme :D
+
+        $ cat FichierB
+        un fichier PAS nomme Fichier A
+        Ceci est le deuxieme fichier
+        B
+    
+    
+        $ git diff 50dcb3cd131fe7d245cbc205d8d3e9776b556999 cf4adb3ce6e6bf76429f88e5a53087cdc79407e8
+        diff --git a/FichierB b/FichierB
+        index f3ba53b..94c1267 100644
+        --- a/FichierB
+        +++ b/FichierB
+        @@ -1,6 +1,3 @@
+        un fichier PAS nomme Fichier A
+        Ceci est le deuxieme fichier
+        B
+        -
+        -
+        -Modification du Fichier B pour ajout d'information
+
+
+#### <a name="checkout_old_file" />Checkout dans un commit passé 
+
+Il est aussi possible de renversé un fichier dans un état passer avec la commande **checkout** déjà aperçu un peu plus tôt. Voici l'état du dépôt __git-demo__:
+
+        $ git log --pretty=oneline
+        f8152f8c96762c39a7efb61f370feb04619d347d modif de C avant de faire le checkout
+        64bd30cb5ce64b4fe38a9db12b40ca5da7ec7660  modif de A et C
+        cf4adb3ce6e6bf76429f88e5a53087cdc79407e8 Revert " Modif fichier B pour ajout info"
+        50dcb3cd131fe7d245cbc205d8d3e9776b556999  Modification du fichier A pour finaliser la demonstration
+        b7c6d7c50b4f0a79d1bd3a1a6ec33a1430792d41  Je modifie C pour avoir un autre com
+        40e85b5d1de8a77313f32780a8bc5347d1069219  Modif fichier B pour ajout info
+        bb6a8d445bd9d84479b47c1debd87b4208057490  Reset de plusieurs commits
+        2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
+        84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
+
+Je vais renversé le **fichierC**  à sont état lors du __commitcf4adb3ce6e6bf76429f88e5a53087cdc79407e8(Revert " Modif fichier B pour ajout info"__ . Dans le cas présent je ne peux pas renversé le __commit 64bd30cb5ce64b4fe38a9db12b40ca5da7ec7660  modif de A et C)__ car il y a aussi une modification du **fichierA**.
+
+Voici les différences :
+
+        $ git diff cf4adb3ce6e6bf76429f88e5a53087cdc79407e8 64bd30cb5ce64b4fe38a9db12b40ca5da7ec7660
+        diff --git a/FichierA b/FichierA
+        index e8ef86e..9b2a687 100644
+        --- a/FichierA
+        +++ b/FichierA
+        @@ -3,3 +3,5 @@ Ceci est le premier fichier
+        A
+          
+        Et le dernier pour modifier le fichier A
+        +
+        +Modification pour la demo du checkout
+        diff --git a/FichierC b/FichierC
+        index 181c9df..b25562b 100644
+        --- a/FichierC
+        +++ b/FichierC
+        @@ -2,3 +2,4 @@ Un fichier nomme avec un C a la fin
+        Ceci est le troisieme fichier
+            
+        un autre commit pour modification du fichier C
+        +demonstration pour le checkout
+    
+        $ git diff cf4adb3ce6e6bf76429f88e5a53087cdc79407e8
+        diff --git a/FichierA b/FichierA
+        index e8ef86e..9b2a687 100644
+        --- a/FichierA
+        +++ b/FichierA
+        @@ -3,3 +3,5 @@ Ceci est le premier fichier
+        A
+          
+        Et le dernier pour modifier le fichier A
+        +
+        +Modification pour la demo du checkout
+        diff --git a/FichierC b/FichierC
+        index 181c9df..e032e9f 100644
+        --- a/FichierC
+        +++ b/FichierC
+        @@ -2,3 +2,5 @@ Un fichier nomme avec un C a la fin
+        Ceci est le troisieme fichier
+            
+        un autre commit pour modification du fichier C
+        +demonstration pour le checkout
+        +encore une autre modification 
+
+Réalisation de l'opération de **checkout** :
+
+        $ git checkout cf4adb3ce6e6bf76429f88e5a53087cdc79407e8 FichierC 
+        [ AUCUN OUTPUT ]
+        $ git status -s
+        M  FichierC
+ 
+On voit bien que  **fichierC** fut modifier mais pas A , qui a conservé le contenu du commit. Validons et réalisons un __commit__ de la modification pour enregistrer le **checkout** dans le passé de **fichierC**.
+
+        $ git commit -a -m " checkout du fichierC depuis le passe "
+        [master dffa227]  checkout du fichierC depuis le passe
+        1 file changed, 2 deletions(-)
+        $ git log --pretty=oneline
+        dffa227a72fff9e3c34d6b34e13e581ffb765617  checkout du fichierC depuis le passe
+        f8152f8c96762c39a7efb61f370feb04619d347d modif de C avant de faire le checkout
+        64bd30cb5ce64b4fe38a9db12b40ca5da7ec7660  modif de A et C
+        cf4adb3ce6e6bf76429f88e5a53087cdc79407e8 Revert " Modif fichier B pour ajout info"
+        50dcb3cd131fe7d245cbc205d8d3e9776b556999  Modification du fichier A pour finaliser la demonstration
+        b7c6d7c50b4f0a79d1bd3a1a6ec33a1430792d41  Je modifie C pour avoir un autre com
+        40e85b5d1de8a77313f32780a8bc5347d1069219  Modif fichier B pour ajout info
+        bb6a8d445bd9d84479b47c1debd87b4208057490  Reset de plusieurs commits
+        2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
+        84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
+
+Simple mais faut ce rappeler des commandes :P, toujours le même secret pour s'en rappeler l'utiliser régulièrement :D.
+
+## <a name="branch" />Manipulation de branche
+
+Quasiment tous les __VCS__ ont une forme ou une autre de gestion de branche. Créer une branche signifie diverger de la ligne principale de développement et continuer à travailler sans se préoccuper de cette ligne principale. Dans de nombreux outils de gestion de version, cette fonctionnalité est souvent chère en ressources et nécessite de créer une nouvelle copie du répertoire de travail, ce qui peut prendre longtemps dans le cas de gros projets.
+
+De nombreuses personnes font référence au modèle de gestion de branche de Git comme LA fonctionnalité et c'est sûrement la spécificité de Git par rapport à la communauté des gestionnaires de version. Pourquoi est-elle si spéciale ? La méthode de Git pour gérer les branches est particulièrement légère, permettant de réaliser des embranchements quasi instantanément et de basculer entre les branches généralement aussi rapidement. À la différence de nombreux autres gestionnaires de version, Git encourage à travailler avec des méthodes qui privilégient la création et la fusion de branches, jusqu'à plusieurs fois par jour. Bien comprendre et maîtriser cette fonctionnalité est un atout pour faire de Git un outil unique qui peut littéralement changer la manière de développer.
+
+### <a name="branch_concept" />Concept des branches 
+
+Ce qui suit est très intéressant  en plus de couvrir la question des branches sous git, nous allons voir un peu plus comment le système __git__ fonctionne pour stocker les informations de l'historique.
+Revoyons comment le système fonctionne pour le stockage des données lors d'un __commit__. Lorsqu'on __commit__ dans Git, le système stocke un **objet commit** qui contient un pointeur vers l'instantané (__snapshot__) du contenu qui a été indexé, les méta-données d'auteur , le message et zéro ou plusieurs pointeurs vers le ou les __commits__ qui sont les parents directs de ce commit : zéro parent pour le première __commit__, un parent pour un __commit__ normal et des parents multiples pour des __commits__ qui sont le résultat de la fusion d'une ou plusieurs branches.
+
+Voici un exemple de lors de la création du dépôt et le commit des 3 fichiers :
+
+        $ git init
+        $ git add LISEZMOI test.rb LICENCE
+        $ git commit -m 'commit initial de mon projet'
+
+
+Le dépôt **git** contient à présent cinq objets : un __blob__ pour le contenu de chacun des trois fichiers, un arbre qui liste le contenu du répertoire et spécifie quels noms de fichiers sont attachés à quels __blobs__ et un objet commit avec le pointeur vers l'arbre d'origine et toutes les méta-données attachées au commit. Conceptuellement, les données contenues dans votre dépôt Git ressemblent 
+
+![representation_commit.png](./imgs/representation_commit.png)
+
+Voici un autre représentation mais pour un ensemble de __commit__ : 
+
+![representation_multi_commit.png](./imgs/representation_multi_commit.png)
+
+La branche par défaut sous __git__ se nomme **master** cette dernière est implicite lors de la création de dépôt nous le voyons lors de l'utilisation de la commande **git status** :
+
+        $ git status 
+        On branch master
+        nothing to commit, working directory clean
+
+Ce qui représente la branche **master** est simplement un pointeur vers un objet __commit__
+
+![representation_commit_branche_master.png](./imgs/representation_commit_branche_master.png)
+
+#### <a name="create_branch" />Création d'une branche
+
+Afin de démontrer l'utilisation des branches le plus simple reste de réaliser une démonstration, nous allons donc créer une branche nommé __testing__.
+
+        $ git branch testing
+
+Si nous reprenons la représentation graphique précédent voici la nouvelle configuration :
+
+![representation_creation_branch.png](./imgs/representation_creation_branch.png)
+
+
+Comment Git connaît il la branche sur laquelle vous vous trouvez ? Il conserve un pointeur spécial appelé **HEAD**. Remarquez que sous cette appellation se cache un concept très différent de celui utilisé dans les autres __VCS__ tels que __Subversion__. Dans Git, c'est un pointeur sur la **branche locale** où vous vous trouvez. Dans notre cas, vous vous trouvez toujours sur **master**. La commande **git branch** n'a fait que créer une nouvelle branche 
+
+Vous pouvez visualiser les branches avec la commande **git branch** sans argument :
+
+        $ git branch
+        * master
+          testing
+
+L'étoile indique sur quelle branche nous travaillions actuellement localement sur notre dépôt. Un petite visualisation graphique :
+
+
+![head-position.png](./imgs/head-position.png)
+
+#### <a name="change_branche" />Changer de branche
+
+Voici la commande : 
+
+        $ git checkout testing
+        Switched to branch 'testing'
+
+La représentation graphique :
+
+![head-position-testing-branch.png](./imgs/head-position-testing-branch.png)
+
+Pour finir voyons ce qui se passe lors d'un changement de la branche **testing** 
+
+        $ vim test.rb
+        $ git commit -a -m "une modification "
+
+![change_testing_branche.png](./imgs/change_testing_branche.png)
+
+
+Retournons sur la branche **master** :
+
+        $ git checkout master
+        Switched to branch 'master'
+
+Cette commande a réalisé deux actions. Elle a remis le pointeur **HEAD** sur la branche **master** et elle a replacé les fichiers de la copie de travail dans l'état pointé par **master**. Cela signifie aussi que les modifications que vous réalisez à partir de maintenant divergeront de l'ancienne version du projet. Cette commande retire les modifications réalisées dans la branche test pour vous permettre de repartir dans une autre direction de développement.
+
+Réalisons une modification sur cette branche et visualisons le résultat de l'opération avec une représentation graphique :
+
+        $ vim test.rb
+        $ git commit -a -m " Un autre changement"
+
+![branche_multiple_changement.png](./imgs/branche_multiple_changement.png)
+
+Parce que dans Git, une branche n'est en fait qu'un simple fichier contenant les 40 caractères de la somme de contrôle SHA-1 du commit sur lequel elle pointe, les branches ne coûtent rien à créer et détruire. Créer une branche est aussi rapide qu'écrire un fichier de 41 caractères (40 caractères plus un retour chariot).
+
+C'est une différence de taille avec la manière dont la plupart des VCS gèrent les branches, qui implique de copier tous les fichiers du projet dans un second répertoire. 
+
+### <a name="demo_use_branche" />Exemple d'utilisation des branches :
+
+Voici une démonstration de l'utilisation des branches l'objectif ici est de démontrer l'avantage de l'utilisation de **git** et principalement la simplicité du système de branche. En plus de l'intérêt de la décentralisation , l'autre aspect intéressant est le système de branche performant .
+
+Mise en situation , vous travaillez sur un site web avec git , voici l'état du projet "simple" :
+
+![utilisation_des_branches_1.png](./imgs/utilisation_des_branches_1.png)
+
+Vous recevez une demande pour une amélioration requise dans la prochaine version **ticket/issue #53** , vous créer un nouvelle branche pour réaliser les modifications , pour rappel : **git branch iss53** , **git checkout iss53**. Vous commencez votre développement, après un __commit__ voici le résultat.
+
+![utilisation_des_branches_2.png](./imgs/utilisation_des_branches_2.png)
+
+Comme toujours on ne vous laisse pas tranquille sur vos projets :P, on vient vous signaler un problème à changer en production . Avec Git, vous n'avez pas besoin de déployer les modifications déjà validées pour **iss53** avec les correctifs du problème et vous n'avez pas non plus à suer pour éliminer ces modifications avant de pouvoir appliquer les correctifs du problème en production. Tout ce que vous avez à faire, c'est simplement rebasculer sur la branche **master**. Prendre note qu'il faudra __commiter__ vos changement dans la branche **iss53** avant de faire le changement.
+
+        $ git checkout master
+        Switched to branch "master"
+
+À présent, votre répertoire de copie de travail est exactement dans l'état précédent les modifications pour le problème #53 et vous pouvez vous consacrer à votre correctif. C'est un point important : Git réinitialise le répertoire de travail pour qu'il ressemble à l'instantané de la validation sur laquelle la branche que vous extrayez pointe. Il ajoute, retire et modifie les fichiers automatiquement pour assurer que la copie de travail soit identique à ce qu'elle était lors de votre dernière validation sur la branche.
+
+Pour répondre à la demande "urgente" nous allons créer une nouvelle branche pour ce besoin, c'est pas chère et plus propre.
+
+        $ git checkout -b 'hotfix'
+        Switched to a new branch "hotfix"
+        $ vim index.html
+        $ git commit -a -m "correction d'une adresse mail incorrecte"
+        [correctif]: created 3a0874c: "correction d'une adresse mail incorrecte"
+         1 files changed, 0 insertions(+), 1 deletions(-)
+
+
+![utilisation_des_branches_3.png](./imgs/utilisation_des_branches_3.png)
+
+
+### <a name="merge_branch_simple" />Fusionner (merge) les branches
+
+Suite au nombreux testes et probablement plusieurs __commit__ vous avez corrigé le problème de production avec un __hotfix__. 
+Nous allons maintenant **merger** , inclure ses nouvelles modifications dans la branche principal **master**.
+
+Nous basculons sous la branche de destination **master** et nous exécutons la commande **git merge** avec le nom de la branche comme référence. 
+
+        $ git checkout master
+        $ git merge hotfix
+        Updating f42c576..3a0874c
+        Fast forward
+         index.html|    1 -
+         1 files changed, 0 insertions(+), 1 deletions(-)
+
+
+Vous noterez la mention " **Fast forward** " qui signifie avance rapide dans cette fusion. Comme le commit pointé par la branche que vous avez fusionnée était directement descendant du commit sur lequel vous vous trouvez, Git a avancé le pointeur en avant. Autrement dit, lorsque l'on cherche à fusionner un commit qui peut être joint en suivant l'historique depuis le commit d'origine, Git avance simplement le pointeur car il n'y a pas de travaux divergents à réellement fusionner — ceci s'appelle l'avance rapide.
+
+![utilisation_des_branches_4.png](./imgs/utilisation_des_branches_4.png)
+
+
+### <a name="delete_branch" /> Suppression d'une branche
+
+Il est possible de supprimer une branche, dans notre cas la branche **hotfix** n'étant plus requise car la fusion fut réalisé dans la branche **master**.
+
+        $ git branch -d hotfix
+        Deleted branch hotfix (3a0874c).
+
+
+### <a name="merge_branch_comp" /> Fusionner (merge) de branches non séquentiel
+
+Il est utile de noter que le travail réalisé dans correctif n'est pas contenu dans les fichiers de la branche **iss53**. Si vous avez besoin de les y rapatrier, vous pouvez fusionner la branche **master** dans la branche **iss53** en lançant la commande **git merge master**, ou vous pouvez retarder l'intégration de ces modifications jusqu'à ce que vous décidiez plus tard de rapatrier la branche **iss53** dans **master**. Pour les besoins de la démonstration, je vais prendre l'option 2 , soit de fusionner la branche **iss53** une fois l'ensemble du correctif terminé .
+
+Toujours dans l'esprit d'avoir une démonstration complète voici l'opération de retour sous la branche **iss53** , une petite modification et le **commit**
+
+        $ git checkout iss53
+        Switched to branch "iss53"
+        $ vim index.html
+        $ git commit -a -m 'Nouveau pied de page terminé [problème 53]'
+        [iss53]: created ad82d7a: "Nouveau pied de page terminé [problème 53]"
+         1 files changed, 1 insertions(+), 0 deletions(-)
+
+La représentation graphique du dépôt:
+
+![utilisation_des_branches_5.png](./imgs/utilisation_des_branches_5.png)
+
+Nous allons à présent rapatrier / fusionner les changements réalisé dans la branche **iss53** dans la branche **master**. Au niveau de l'utilisation des commandes nous utilisons toujours **git merge** pour faire l'opération.
+
+        $ git checkout master
+        $ git merge iss53
+        Merge made by recursive.
+         index.html |    1 +
+          1 files changed, 1 insertions(+), 0 deletions(-)
+
+Vous constaterez que dans le cas présent il n'y a pas l'indication " **Fast forward** " , car l'historique des **commits** ne sont pas identique :
+
+![utilisation_des_branches_6.png](./imgs/utilisation_des_branches_6.png)
+
+Dans ce cas, l'historique de développement a divergé à un certain point. Comme le commit sur la branche sur laquelle vous vous trouvez n'est plus un ancêtre direct de la branche que vous cherchez à fusionner, Git doit travailler. Dans ce cas, Git réalise une simple fusion à trois sources, en utilisant les deux instantanés pointés par les sommets des branches et l'ancêtre commun des deux.
+
+Au lieu d'avancer simplement le pointeur de branche, Git crée un nouvel instantané qui résulte de la fusion à trois branches et crée automatiquement un nouveau commit qui pointe dessus. On appelle ceci un commit de fusion, qui est spécial en ce qu'il comporte plus d'un parent.
+
+![utilisation_des_branches_7.png](./imgs/utilisation_des_branches_7.png)
+
+
+### <a name="merge_conflit" />Gestion de conflit lors de la fusion ("merge")
+
+La démonstration ci-dessus est dans le meilleur des cas , malheureusement il est possible qu'il y est des conflits lors de la fusion. Si vous avez modifié différemment la même partie du même fichier dans les deux branches que vous souhaitez fusionner, Git ne sera pas capable de réaliser proprement la fusion.
+
+Dans notre cas, si le correctif contenu dans la branche **hotfix** touche la même section du fichier contenu dans **iss53** nous auront l'erreur suivante : 
+
+        $ git merge iss53
+        Auto-merging index.html
+        CONFLICT (content): Merge conflict in index.html
+        Automatic merge failed; fix conflicts and then commit the result
+
+Git n'a pas automatiquement créé le commit du fusion. Il a arrêté le processus le temps que vous résolviez le conflit. Lancez **git status** pour voir à tout moment après l'apparition du conflit de fusion quels fichiers n'ont pas été fusionnés
+
+        $  git status
+        index.html: needs merge
+        # On branch master
+        # Changes not staged for commit:
+        #   (use "git add <file>..." to update what will be committed)
+        #   (use "git checkout -- <file>..." to discard changes in working directory)
+        #
+        #   unmerged:   index.html
+        #
+
+Tout ce qui comporte des conflits de fusion et n'a pas été résolu est listé comme **unmerged**. Git ajoute des marques de conflit standard dans les fichiers qui comportent des conflits, pour que vous puissiez les ouvrir et résoudre les conflits manuellement. Votre fichier contient des sections qui ressemblent à ceci :
+
+        <<<<<<< HEAD:index.html
+        <div id="footer">contact : email.support@github.com</div>
+        =======
+        <div id="footer">
+          please contact us at support@github.com
+        </div>
+        >>>>>>> iss53:index.html
+
+Cela signifie que la version dans **HEAD** (votre branche **master**, parce que c'est celle que vous aviez extraite quand vous avez lancé votre commande de fusion) est la partie supérieure de ce bloc (tout ce qui se trouve au dessus de la **ligne =======**), tandis que la version de la branche **iss53** se trouve en dessous. Pour résoudre le conflit, vous devez choisir une partie ou l'autre ou bien fusionner leurs contenus par vous-même.
+
+Une fois l'édition des fichiers terminé avec la bonne information entre les **<<<<<<<** et **>>>>>** et qu'il n'y a donc plus les lignes : **<<<<<<<, ======= et >>>>>>>**. Nous ajoutons le fichier dans l'index avec la commande **git add** et vous pouvez faire le commit **git commit**.
+
+Si vous souhaitez utiliser un outil graphique pour résoudre ces problèmes, vous pouvez lancer **git mergetool** qui démarre l'outil graphique de fusion approprié et vous permet de naviguer dans les conflits .
+
+## <a name="work_remote_repo" />Travailler avec un dépôt distant 
+
+L'utilisation de **git** de manière décentralisé n'empêche en aucun cas l'utilisation d'un serveur pour faire l'échange des fichier et offrir l'accès à tous au dépôt. Vous pouvez utiliser de manière gratuit **github** [http://github.com/](http://github.com/). La gratuité s'applique pour les dépôts publique si vous voulez avoir un dépôt privé , il faut débourser un peu d'argent.
+
+Il y a 2 modes d'authentification possible avec **GIT** :
+
+* nom utilisateur / mot de passe
+* avec une clef __ssh__
+
+Je vais réaliser une introduction plus d'information disponible sur le site de git : [https://git-scm.com/book/fr/v1/Les-bases-de-Git-Travailler-avec-des-d%C3%A9p%C3%B4ts-distants](https://git-scm.com/book/fr/v1/Les-bases-de-Git-Travailler-avec-des-d%C3%A9p%C3%B4ts-distants)
+### <a name="git_clone" /> Git Clone
+
+Nous avons déjà eu l'occasion de voir comment extraire un dépôt **GIT** , avec la commande :
+
+        $ git clone URL_du_depot
+        ou
+        $ git clone git@HOSTNAME:path_project
+
+### <a name="visualisation_remote" /> Visualisation des dépôt distant configurer
+
+Pour un même dépôt il est possible d'avoir un ou plusieurs dépôt distant de configurer, nous pouvons utiliser la commande **git remote** pour faire l'ensemble des modifications. L'identifiant **origin** est celui utilisé par défaut lors de l'utilisation de **git clone**. 
+
+Voici un exemple de la visualisation :
+
+        $ git remote -v
+        github  https://github.com/x3rus/training.git (fetch)
+        github  https://github.com/x3rus/training.git (push)
+        origin  https://git.x3rus.com/sysadmin/training.git (fetch)
+        origin  https://git.x3rus.com/sysadmin/training.git (push)
+
+Dans la situation présente j'ai :
+
+* __github__ : qui est mon dépôt publique sur internet où tout le monde peut visualiser mon travaille
+* __origin__ : ceci est mon serveur [gitlab](https://about.gitlab.com/) , ceci est une version libre de __github__ , ça me permet d'avoir une nombre illimité de dépôt privé.
+
+Dans les 2 cas c'est la même configuration pour extraire (__fetch__) et pousser (__push__) les fichiers .
+
+Nous pouvons visualiser si notre dépôt local est synchrone avec la version sur le serveur :
+
+        $ $ git remote show github
+        * remote github
+            Fetch URL: https://github.com/x3rus/training.git
+            Push  URL: https://github.com/x3rus/training.git
+            HEAD branch: master
+            Remote branch:
+            master tracked
+            Local ref configured for 'git push':
+            master pushes to master (up to date)
+
+Dans le cas présent je n'avais qu'une branche , si je prend un autre dépôt qui lui contient plusieurs branches nous allons voir que le résultat est un peu plus complexe :
+
+        $ $ git remote show origin
+        * remote origin
+            Fetch URL: https://git.x3rus.com/webDev/dj_sandbox.git
+            Push  URL: https://git.x3rus.com/webDev/dj_sandbox.git
+            HEAD branch: master
+            Remote branches:
+                master    tracked
+                view_poll tracked
+                x3notes   tracked
+        Local branch configured for 'git pull':
+        view_poll merges with remote view_poll
+        Local refs configured for 'git push':
+            master    pushes to master    (up to date)
+            view_poll pushes to view_poll (up to date)
+            x3notes   pushes to x3notes   (up to date)
+
+### <a name="pull_git" />Mise à jour des fichiers DEPUIS le serveur (pull)
+
+Bien entendu nous désirons récupérer les fichiers qui furent mis à jour par nos collègues , amis , ... Pour ce faire nous utilisons la commande **git pull**
+
+Nous donnons donc l'instruction **git pull** en paramètre la source (l'identifiant) , si je reprends l'exemple plus haut ce pourrait être __origin__ ou __github__, et pour finir la branche que je désire récupérer. Voici un exemple avec des mise à jour.
+
+        $ git pull origin master
+        Username for 'https://git.x3rus.com': USER
+        Password for 'https://USER@git.x3rus.com':
+        remote: Counting objects: 5, done.
+        remote: Compressing objects: 100% (4/4), done.
+        remote: Total 5 (delta 3), reused 0 (delta 0)
+        Unpacking objects: 100% (5/5), done.
+        From https://git.x3rus.com/sysadmin/training
+         * branch            master     -> FETCH_HEAD
+            8b479ec..cd85a27  master     -> origin/master
+            Updating 8b479ec..cd85a27
+         Fast-forward
+         Linux202/atelier/01_revision.mkd | 8 ++++----
+         1 file changed, 4 insertions(+), 4 deletions(-)
+
+Prenons une petite minute pour lire ce que la commande nous fournis. La première section est plus informatif, j'aimerai porter votre attention sur la section qui traite des branches soit :
+        
+         * branch            master     -> FETCH_HEAD
+            8b479ec..cd85a27  master     -> origin/master
+            Updating 8b479ec..cd85a27
+         Fast-forward
+         Linux202/atelier/01_revision.mkd | 8 ++++----
+         1 file changed, 4 insertions(+), 4 deletions(-)
+
+Premièrement le système analyse l'identifiant **HEAD** du dépôt local pour la branche **master** , l'__id__ est __8b479ec__ il compare cette identifiant avec celui extrait depuis le serveur **origin/master** , l'identifiant est __cd85a27__. Comme ceci n'est pas identique il débute le processus de fusion. 
+Nous retrouvons le message **Fast-forward** , car il y a un commit commun dans l'historique __8b479ec__ et que les __commits__ suivant se sont ajouter avec le temps. Comme nous l'avions vu lors de la section de [fusion](#merge_branch_simple), le système va simplement télécharger le nouveau dépôt et modifier le pointeur **HEAD** sur la nouvelle tête.
+
+Autre point à noter nous avons la description des modifications réalisé sur les fichiers, dans le cas présent uniquement le fichier __01\_revision.mkd__ fut modifié , avec des changements mineurs.
+
+### <a name="push_git" />Mise à jour des fichiers VERS le serveur (push)
+
+Maintenant que nous sommes en mesure d'extraire les changements réalisé par les autres voyons comment nous nous pouvons pousser nos fichiers. Bien entendu pour pouvoir pousser des modifications sur le serveur il faut avoir les droits sur le dépôt.
+
+Un petit rappel, nous ne poussons pas des fichiers sur le serveur mais un dépôt , donc pour pouvoir mettre à jour un fichier sur le serveur il faut avoir __commité__ localement les fichiers et c'est le dépôt __commité__ localement que nous synchronisons avec le serveur.
+
+Donc si je désire modifier le fichier __toto.html__ 
+
+1. Je met à jour mon dépôt local (**git pull**)
+1. Je réalise les modifications sur le fichier
+2. Je réalise le commit local (**git commit -a -m "Description"**)
+3. Je pousse mes modifications sur le serveur
+
+Voici l'instruction pour mettre à jour le dépôt :
+
+        $  git push github master
+        Username for 'https://github.com': USER
+        Password for 'https://USER@github.com': 
+        Counting objects: 4, done.
+        Delta compression using up to 2 threads.
+        Compressing objects: 100% (4/4), done.
+        Writing objects: 100% (4/4), 3.03 KiB | 0 bytes/s, done.
+        Total 4 (delta 2), reused 0 (delta 0)
+        To https://github.com/x3rus/training.git
+           cd85a27..06ed09f  master -> master
+
+
+Voilà le dépôt distant à maintenant le nouveau dépôt avec l'ensemble des modifications :D.
+
+
+# <a name="other_feature" />Fonctionnalité non traité ici
+
+J'ai omis certaine fonctionnalité car pour le moment je ne les utilises rarement. Cependant il est possible que ces dernières vous soit requis voici donc des liens vers une documentation complémentaire :
+
+* __Tags__/étiquetage : http://git-scm.com/book/fr/v1/Les-bases-de-Git-%C3%89tiquetage
+* __spares checkout__/ extraire un sous répertoire  : http://stackoverflow.com/questions/4114887/is-it-possible-to-do-a-sparse-checkout-without-checking-out-the-whole-repository
+* submodules/inclure des dépôt git dans d'autre git :P : https://git-scm.com/book/fr/v1/Utilitaires-Git-Sous-modules
+
+
+# <a name="ref" />Référence : 
+
+* site de **git** : http://git-scm.com/book/fr/v1/
+* Git Cheat sheet : https://training.github.com/kit/downloads/github-git-cheat-sheet.pdf
+* site __atlassian__ : https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting/summary

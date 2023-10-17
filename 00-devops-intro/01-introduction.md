@@ -1,6 +1,6 @@
 ﻿# Présentation de DevOps
 
-Depuis environ 3 ans, le terme **devops** est arrivé dans le langage des gestionnaires, si nous regardons les offres d'emplois, on voit que même les banques ont emboité le pas. Bon c'est bien beau, mais comme bien souvent le terme est mal compris ou mal employé, nous allons essayer de clarifier le concept. 
+le terme **devops** est arrivé dans le langage des gestionnaires, si nous regardons les offres d'emplois, on voit que même les banques ont emboité le pas. Bon c'est bien beau, mais comme bien souvent le terme est mal compris ou mal employé, nous allons essayer de clarifier le concept. 
 
 Tel que mentionné, ceci est un concept donc sujet à interprétation, ce n'est pas une recette à appliquer bêtement, mais une méthode de travail. Il faut l'adapter à votre environnement, votre réalité tous en gardant les principes de base. Afin de comprendre le concept, nous allons partir de l'histoire qui a amené les organisations à considérer ce mode de travail. 
 
@@ -10,19 +10,19 @@ Je pense que si nous comprenons le cheminement du changement de méthode, ceci s
 
 Il y a pas si longtemps, l'ensemble du développement était réalisé en mode [**cascade**](https://fr.wikipedia.org/wiki/Cycle_de_d%C3%A9veloppement_(logiciel)#Mod.C3.A8le_en_cascade)  ou [**warterfall**](https://en.wikipedia.org/wiki/Waterfall_model) en anglais. 
 
-Afin de m'assurer que l'on est tous sur la même longueur rapide clarification sur le mode en cascade, une petite image et on développe dessus 
+Afin de m'assurer que l'on est tous sur la même longueur d'onde, une rapide clarification sur le mode en cascade, figurant ci-dessous
 
 ![](./imgs/waterfall.png)
 
 L'idée de ce mode de développement est de :
 
-1. Définir l'ensemble des requis applicatif en fait l'ensemble de l'application 
-2. Suite à cette définir réalisation de l'architecture 
-3. Réalisation du programme, peu de changement devrons avoir lieu, car l'ensemble des requis furent définie à l'étape 1. Dans la réalité les demandes de changement arrivent et retardent la livraison :P.
+1. Définir l'ensemble des requis applicatif, en fait l'ensemble de l'application.
+2. Suite à cette définition, on réalise l'architecture (la conception).
+3. Réalisation du programme, peu de changement devrons avoir lieu, car l'ensemble des requis furent définie à l'étape 1. Dans la réalité les demandes de changement arrivent et retardent la livraison .
 4. Validation 
 5. Déploiement et maintenance applicatifs 
 
-Ceci est en opposition avec le mode [**agile**](https://fr.wikipedia.org/wiki/M%C3%A9thode_agile) qui se veut un développement itératif . De nos jours ce mode de développement est le plus courant dans l’industrie.
+Ceci est en opposition avec la méthodologie [**agile**](https://fr.wikipedia.org/wiki/M%C3%A9thode_agile) qui se veut un développement itératif . De nos jours ce mode de développement est le plus courant dans l’industrie.
 
 Les méthodes agiles prônent 4 valeurs fondamentales :
 
@@ -32,7 +32,7 @@ Les méthodes agiles prônent 4 valeurs fondamentales :
 * Acceptation du changement plutôt que conformité aux plans
 
 
-Pourquoi le mode **agile** à pris de l'ampleur ? Premièrement parce que le __client__ ou __demandeur__ est impliqué dans le développement dans les décisions des prochaines fonctionnalités à mettre en place. Tout le monde aime être impliqué :P , en plus de choisir les prochaines fonctionnalités il peut voir l'évolution et comprendre les problématiques rencontrées. Dans le mode **cascade** il attend un certain nombre de mois avant de voir un résultat. Cette inclusion du client fait aussi en sorte que grâce à ce dialogue s'il change d'avis, désolé, quand il change d'avis ceci sera dans a prochaine itération. Comme il y a régulièrement des livrables avec cette méthode, l'application peut être déployée , mise en production et continuer son évolution !! Le dernier point est important, car comme la concurrence est forte sur l'ensemble des services offert sur internet les nouvelles fonctionnalités doivent arriver régulièrement pour sustenter le client / utilisateurs. 
+Pourquoi la méthodologie **agile** à pris de l'ampleur ? Premièrement parce que le __client__ ou __demandeur__ est impliqué dans le développement dans les décisions des prochaines fonctionnalités à mettre en place. Tout le monde aime être impliqué  , en plus de choisir les prochaines fonctionnalités il peut voir l'évolution et comprendre les problématiques rencontrées. Dans le mode **cascade** il attend un certain nombre de mois avant de voir un résultat. Cette inclusion du client fait aussi en sorte que grâce à ce dialogue s'il change d'avis, désolé, quand il change d'avis ceci sera dans a prochaine itération. Comme il y a régulièrement des livrables avec cette méthode, l'application peut être déployée , mise en production et continuer son évolution !! Le dernier point est important, car comme la concurrence est forte sur l'ensemble des services offert sur internet les nouvelles fonctionnalités doivent arriver régulièrement pour sustenter le client / utilisateurs. 
 Résultat nous aurons beaucoup plus de livraison : version 1.0 , 1.1 , 1.2 à 1.8 puis la version 2 , 2.1 à 2.5 , peut-être dans des délais cours
 
 Si nous revenons à la méthode **cascade** en comparaison , avec le mode **agile** l'idée est de livrer des fonctionnalités plus rapidement qui seront mis en production ! 
@@ -44,7 +44,7 @@ Ce changement de mode de travail des développeurs sera un des premiers tournant
 
 La situation sur-le-champ de bataille est donc la suivante :
 
-* Le Développeur qui se prend pour un super Héros, il désire pousser ces fonctionnalités "SANS BUGS" qu'il a développés  ( et oui j'étais un Opérateur :P ) 
+* Le Développeur qui se prend pour un super Héros, il désire pousser ces fonctionnalités "SANS BUGS" qu'il a développés  ( et oui j'étais un Opérateur  ) 
 
 ![](./imgs/dev-super-hero.png)
 
@@ -52,7 +52,7 @@ La situation sur-le-champ de bataille est donc la suivante :
 
 ![](./imgs/operator-200px.png)
 
-Faut dire que souvent l'opérateur est sur appel la nuit et les week-ends il a tous intérêt à s'assurer de la stabilité s'il ne veut pas être réveille en pleine nuit ou pendant un match de foot :P.
+Faut dire que souvent l'opérateur est sur appel la nuit et les week-ends il a tous intérêt à s'assurer de la stabilité s'il ne veut pas être réveille en pleine nuit ou pendant un match de foot .
 
 Résultat voici une représentation de l'état des relations entre les 2 équipes :
 
@@ -60,21 +60,21 @@ Résultat voici une représentation de l'état des relations entre les 2 équipe
 
 Si en plus votre organisation est de taille moyenne et que les 2 équipes ne sont pas physiquement proches, les frustrations sont nombreuses et les critiques entre les 2 équipes sont nombreuses . Bien entendu ceci est dû à une incompréhension des 2 réalités.
 
-Résultat , l'opérateur est un gros méchant qui bloque l'innovation des développeurs, à tort ou à raison peu importe , le problème est que souvent le développement fut réalisé et il ne passe pas l'étape du déploiement et l'opérateur oblige des correctifs mineur ou majeur selon la situation. Comme le développement est en mode agile, l'impact est moindre, mais génère des retards sur la livraison .
+Résultat , l'opérateur est un gros méchant qui bloque l'innovation des développeurs, à tort ou à raison peu importe , le problème est que souvent le développement fut réalisé et il ne passe pas l'étape du déploiement et l'opérateur oblige des correctifs mineur ou majeur selon la situation. Comme le développement est en méthodologie agile, l'impact est moindre, mais génère des retards sur la livraison .
 
 Nous constatons donc un changement au niveau du développement, mais pas dans l'ensemble de la chaine de production résultat le gain n'est pas optimal !
 
-Ce changement organisationnel arrive avec le mode **DevOps**
+Ce changement organisationnel arrive avec la méthodologie **DevOps**
 
-# La solution le mode DevOps 
+# La solution la méthodologie DevOps 
 
-Maintenant que nous avons vu le cheminement qui à précéder l'arrivée du **DevOps** ceci sera plus simple à comprendre. L'objectif principal et de détruire le **mur de la confusion** ou **mur de l'incompréhension**. En d'autre mot unir les Développeurs et les Opérateurs, aille ça ressemble au terme **DevOps** d'un seul coup :P.
+Maintenant que nous avons vu le cheminement qui à précéder l'arrivée du **DevOps** ceci sera plus simple à comprendre. L'objectif principal et de détruire le **mur de la confusion** ou **mur de l'incompréhension**. En d'autre mot unir les Développeurs et les Opérateurs, aille ça ressemble au terme **DevOps** d'un seul coup .
 
 
 Reprenons les critères principaux des Devs et des Ops, ils sont tous très légitimes  :
 
 * Développeurs :
-    * Développer :P 
+    * Développer  
     * Innover et voir ces innovations en production.
     * NE PAS S'occuper du déploiement , de l'OS et tout le tralala ... 
     * Ne PAS être bloqué dans les choix des technologies. 
@@ -179,7 +179,7 @@ Bien entendu dans votre réalité vous pouvez voir l'association de votre dével
 
 Nous avons vu le cycle de la chaine du développement en mode **DevOps** maintenant nous nous attarderons au principe pour y arriver. Nous allons parler d'automatisation de processus dans le but de suite le rythme imposé par cette boucle infinie du développement.
 
-Commençons avec but , le **Graal** :P .
+Commençons avec but , le **Graal**  .
 
 * Augmentation de la fréquence des déploiements.
 * Fonctionnalité plus rapidement mise en production donc sur le marché.
@@ -198,7 +198,7 @@ C'est parti pour le détail pour y arriver
 
 ### Collaboration
 
-Oui, je vais encore le répéter :P , la collaboration entre les gens, car au final c'est les hommes qui font le travail et qui réussissent de grandes choses. Je ne sais pas qui a dit ça à l'origine, mais ce fut mentionné dans un emploi passé. 
+Oui, je vais encore le répéter  , la collaboration entre les gens, car au final c'est les hommes qui font le travail et qui réussissent de grandes choses. Je ne sais pas qui a dit ça à l'origine, mais ce fut mentionné dans un emploi passé. 
 
 > Tous seul on va plus vite, mais ensemble on va plus loin !! 
 
@@ -226,13 +226,13 @@ Je dirai même que l'objectif est d'automatiser au maximum, ceci aura l'avantage
 * D'augmenter le temps de réalisation des tâches (Productivité)
 * Éventuellement, permettre à n'importe qui d'exécuter l'opération librement sans votre assistance (Self-Service)
 
-Si vous avez peur de ne plus avoir de travail, **pas de panique** on arrive jamais à tout automatiser et on trouve toujours plus de choses à faire quand on a du temps :P.
+Si vous avez peur de ne plus avoir de travail, **pas de panique** on arrive jamais à tout automatiser et on trouve toujours plus de choses à faire quand on a du temps .
 
 ### Intégration continue 
 
 Intégration régulière / continue du travail des personnes de l'équipe. Nous partons du principe que l'équipe utilise un système de contrôle de révision telle que **Subversion**, **git** afin de mettre leur travaille ensemble. Ceci n'est techniquement peut-être pas requis cependant de mon point de vue il est essentiel pour simplifier le retour arrière, ainsi que les requêtes de fusion (merge).
 
-L'objectif de cette étape et de voir **rapidement** s'il y a un problème d'intégration et de pouvoir l'adresser **rapidement** (au risque de me répéter :P ).
+L'objectif de cette étape et de voir **rapidement** s'il y a un problème d'intégration et de pouvoir l'adresser **rapidement** (au risque de me répéter  ).
 
 #### Concrètement
 
@@ -240,7 +240,7 @@ L'objectif de cette étape et de voir **rapidement** s'il y a un problème d'int
 
 L'équipe travaille sur une application 3 tiers ( frontale Web, Application __backend__, Base de donnée ) .
 
-Un développeur pris par un excès de zèle décide de réaliser de la documentation dans le code, __yep__ ça arrive parfois :P . Remplie de confiance il pousse la modification du code sans compilation, car il a rien touché, selon son point de vue. Grâce à l'intégration continue du travail dès que le code sera transmis au serveur Subversion ou Git ce dernier sera compilé et intégré pour validation. L'erreur syntaxique pourra tout de suite être identifiée et une alerte sera transmise à l'équipe pour signaler la problématique. 
+Un développeur pris par un excès de zèle décide de réaliser de la documentation dans le code, __yep__ ça arrive parfois  . Remplie de confiance il pousse la modification du code sans compilation, car il a rien touché, selon son point de vue. Grâce à l'intégration continue du travail dès que le code sera transmis au serveur Subversion ou Git ce dernier sera compilé et intégré pour validation. L'erreur syntaxique pourra tout de suite être identifiée et une alerte sera transmise à l'équipe pour signaler la problématique. 
 
 La personne aillant fait la modification pourra tous de suite prendre action sachant exactement ce qu'il a réalisé. S'il ne le fait pas, car il est parti en vacance l'équipe aura la connaissance que depuis le commit X qui fut réalisé à l'instant T l'application ne compile plus. 
 La personne qui aura transmis son travail au serveur n'aura pas de doute à savoir. Est-ce que c'est MES modifications qui ont causé ce problème ? 
@@ -256,11 +256,11 @@ Nous verrons que les outils présentés seront identifiés à plusieurs lieu.
 * Outils d'intégration du code : **Subversion**, **Git** , **mercurial**, et autre 
 * Outils de traitement pour la réalisation de l'intégration automatique : **Jenkins**, **GitLab ci**, et autre 
 
-Je n'ai nommé que les options libres bien entendu :P.
+Je n'ai nommé que les options libres bien entendu .
 
 ### Test continu ( applicatif et fonctionnel )
 
-Nous avons parlé de l'intégration du code en commun, ceci est un bon début pour valider que l'ensemble compile convenable ou du moins est un tout cohérent, mais est-ce que ça fonctionne vraiment ? :P .
+Nous avons parlé de l'intégration du code en commun, ceci est un bon début pour valider que l'ensemble compile convenable ou du moins est un tout cohérent, mais est-ce que ça fonctionne vraiment ?  .
 
 L'intégration de validation vous aidera aussi à identifier **rapidement** les problématiques et vous offrira aussi une plus grande sécurité. L'objectif ici est de faire plusieurs types de tests :
 
@@ -272,7 +272,7 @@ Pour les personnes qui se disent *wow j'aurais jamais le temps de faire tout cel
 
 #### Test unitaire
 
-Le test unitaire, j'ai moins d'expérience avec cette partie, car la majorité du temps les développeurs me les fournissent :P, car de plus en plus ces derniers le font pour confirmer que l'ajout de fonctionnalité n'a pas cassé quelque chose précédemment.
+Le test unitaire, j'ai moins d'expérience avec cette partie, car la majorité du temps les développeurs me les fournissent , car de plus en plus ces derniers le font pour confirmer que l'ajout de fonctionnalité n'a pas cassé quelque chose précédemment.
 
 L'objectif est toujours le même :
 
@@ -294,7 +294,7 @@ Validation du déploiement de l'application sur un environnement, selon le type 
 
 Lors de l'intégration nous avons validé que *le code compile*, lors des tests unitaires nous avons validé que *le code fonctionne pour des sections spécifiques*. Maintenant nous voulons confirmer que l'installation de l'application est toujours convenable et que l'application démarre.
 
-Donc je vous suggère de déployer l'application sur un environnement toutes les nuits afin de confirmer que l'application est toujours fonctionnelle dans son ensemble. Voici une situation possible : du développement fut réalisé, le code compile ( Yeahh ), les testes unitaires fonctionnes ( super ), malheureusement lors que l'on active l'application dans le serveur Tomcat, ce dernier démarre, mais n'arrive pas à charger le war / ear / l'application quoi :P . 
+Donc je vous suggère de déployer l'application sur un environnement toutes les nuits afin de confirmer que l'application est toujours fonctionnelle dans son ensemble. Voici une situation possible : du développement fut réalisé, le code compile ( Yeahh ), les testes unitaires fonctionnes ( super ), malheureusement lors que l'on active l'application dans le serveur Tomcat, ce dernier démarre, mais n'arrive pas à charger le war / ear / l'application quoi  . 
 
 Et là je ne veux pas entendre : **Oui, mais ça marche sur mon poste !!**, heu , pour rester polie **I don't fucking care** :D . Sans blague si justement ça fonctionne sur le poste, il est possible qu'il manque un fichier qui ne fut pas poussé au contrôleur de révision. L'identification du problème rapidement permettra au développeur de faire le correct, il ne supprimera pas son environnement de travail local, par erreur ou pour faire de la place, risquant de perdre du travail essentiel.
 
@@ -328,7 +328,7 @@ Telle que mentionné lors de la présentation de la méthode **agile** et de la 
 1. Environnements de développement : Permets au développeur de réaliser l'intégration , de faire des tests de fonctionnalité sur un environnement similaire ( et non identique ) à la production. Bien souvent le développeur travaille sur Windows avec une instance tomcat , jboss , apache sur ce système d'exploitation. Cet environnement permet donc d'avoir un système GNU/Linux. Exemple simple de différence , si le nom de fichier utilisé contient des majuscules, mais que le code utilise que des minuscules pour nommer le fichier !
 2. Environnements de QA : Ces environnements permettent au QA de faire leur test , la version déployée est statique à une Release candidate spécifique ou alors une version spécifique de build. Ces environnements devraient représenter les cas de figure supporter , exemple avec ou sans balancer de charge, avec un ou plusieurs serveurs de backend.
 3. Environnement de certification : Ces environnements sont utilisés pour que vos partenaires d'affaires puissent réaliser leurs tests d'intégration avec votre application que ce soit lors de version majeur ou mineur. Ceci peut être aussi des environnements de validation de vos clients avant la mise en production du produit afin certifier que ceci réponds au requis.
-4. Environnement de préproduction : Cet environnement doit être la dernière étape avant de faire la production , ceci vous permet de faire un test passant avec le déploiement en production ( **dry-run** ). Vous pouvez ainsi valider la procédure de déploiement, avant le jour J. Il est importe d'avoir la même architecture que la production. Dans un monde idéal ce serait aussi le même type de machine , mais difficile de demandé un serveur 24 core pour un environnement qui dort :P, mais assurer vous qu'il y est comme en production un load balancer , des pare-feu , etc. Cet environnement pourra aussi vous servir en cas de problème en production pour reproduire un comportement !
+4. Environnement de préproduction : Cet environnement doit être la dernière étape avant de faire la production , ceci vous permet de faire un test passant avec le déploiement en production ( **dry-run** ). Vous pouvez ainsi valider la procédure de déploiement, avant le jour J. Il est importe d'avoir la même architecture que la production. Dans un monde idéal ce serait aussi le même type de machine , mais difficile de demandé un serveur 24 core pour un environnement qui dort , mais assurer vous qu'il y est comme en production un load balancer , des pare-feu , etc. Cet environnement pourra aussi vous servir en cas de problème en production pour reproduire un comportement !
 5. Environnement de performance : Si vous pouvez avoir cet environnement, ceci vous permettra de vous assurer de ne pas avoir de surprise plus tard lors du déploiement.
 6. Environnement de production : Bien entendu faut être en prod :D
 
@@ -373,7 +373,7 @@ Bien entendu je suggère fortement d'utiliser un système de contrôleur de rév
 * Savoir qui a fait la modification , pas pour taper sur les doigts en cas d'erreur, mais comprendre la raison du changement. Il est possible que la raison soit mauvaise, mais ceci fut fait dans un but précis .
 * Savoir quand la modification fut effectuée, encore une fois ceci permet d'identifier si la problématique est présente depuis 1 mois , 1 semaine ou est présente depuis le début du projet
 * Permettre de voir l'évolution de la configuration , si nous prenons l'exemple d'une configuration d'allocation de mémoire nous pourrions voir qu'a chaque version majeure nous doublons la limite ceci sera peut-être problématique plus tard. 
-* Ceci vous permettra aussi de ne pas avoir des fichiers du style .bak , .bak2, .old , ... :P
+* Ceci vous permettra aussi de ne pas avoir des fichiers du style .bak , .bak2, .old , ... 
 
 Ceci vaut aussi pour la question des versions de votre application. Je ne sais pas si vous avez déjà eu le problème, mais j'ai déjà vécu que les fichiers de l'application étaient sur un serveur de fichier mal organisé . Résultat nous avions plusieurs fichiers avec le même nom , incluant la version dans plusieurs répertoires quelle est le bon ?? La date de création n'est clairement pas la bonne source pour garantir que nous avons le bon fichier !!! 
 
@@ -388,7 +388,7 @@ Il existe plusieurs solutions de stockage d'artefact pour conserver les versions
 
 ### Surveillance étroite de l'exploitation 
 
-Je vais me répéter, car on sait comment ça se passe sur internet on ne lit pas l'ensemble du texte :P , donc rapidement un rappel. Suite au nouveau mode de développement les déploiements sont plus fréquents , originalement on codait pendant plusieurs moins puis mettait en production , pendant 6 mois voir 1 an un autre développement puis mise en production. La nouvelle réalité est que nous allons possiblement mettre en production chaque mois ou 2 mois.
+Je vais me répéter, car on sait comment ça se passe sur internet on ne lit pas l'ensemble du texte  , donc rapidement un rappel. Suite au nouveau mode de développement les déploiements sont plus fréquents , originalement on codait pendant plusieurs moins puis mettait en production , pendant 6 mois voir 1 an un autre développement puis mise en production. La nouvelle réalité est que nous allons possiblement mettre en production chaque mois ou 2 mois.
 
 Comme l'environnement va changer régulièrement et possiblement avoir des comportements différents vous devez avoir des yeux sur le système , mais des vraies eux pas juste le **CPU** et la **Mémoire**. Vous êtes avec les développeurs, même famille , même joie , même merde !! Donc vous devez être en mesure d'identifier les problèmes rapidement, afin d'informer vos collègues et établir un plan d'action. 
 
@@ -451,7 +451,7 @@ Donc maintenant la question , est-ce vraiment pertinent que l'on vous emmerde po
 En déléguant ou en fournissant la possibilité aux gens de le faire eux même :
 
 1. Ceci réduit votre charge de travail pour que vous puissiez travailler sur d'autre tâche d'automatisation 
-2. Vous rendez vos utilisateurs plus heureux, car de nos jours les gens ne veulent pas attendre après les gens :P 
+2. Vous rendez vos utilisateurs plus heureux, car de nos jours les gens ne veulent pas attendre après les gens  
 3. Vous avez des utilisateurs qui testent vos applications et vous rapportent des __bugs__ pour les améliorer, pour les personnes qui se disent ouin, mais mon script est pas près ... Blablabla ... Nos stress faîte comme Microsoft tu sors l'application pleine de bugs puis après tu correctifs, on dira ce que l'on veut de Bill Gates, mais au moins il a éduqué l'utilisateur. De nos jours personne ne s’attend à ce qu'un nouveau programme fonctionne bien :D ( Thanks Bill ) 
 
 Bien entendu ceci s'applique aussi pour la visualisation des logs, c'est vraiment ennuyeux de recevoir un courriel , est-ce possible de me transmettre les logs de tels serveurs ? Avec **splunk** , **ELK** ou peu importe la solution tu peux lui dire va y tout seul !! Puis ce qui est magnifique si le gars ou la fille rentre le matin à 7:00 du matin , la personne te fera pas chier si tôt si c'est une urgence, elle le consultera toute seule.

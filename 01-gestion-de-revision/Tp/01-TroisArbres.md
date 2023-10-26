@@ -73,7 +73,7 @@ Remarquez que maintenant `git diff` ne voit aucune différence car, par défaut,
 
 Votre dépot ressemble à cela:
 
-![Screenshot](../images/05-addhellov2.svg)
+![Screenshot](../imgs/05-addhellov2.svg)
 
 Utilisation de 'ecrire()'
 -------------------------
@@ -128,7 +128,7 @@ Remarquez que ce diff est la fusion des deux autres.
 
 Chaque espace contient une version différente de fichier **hello.py** .
 
-![Screenshot](../images/06-edithellov3.svg)
+![Screenshot](../imgs/06-edithellov3.svg)
 
 Pour garder un historique complet des actions que vous avez effectuées, vous allez bien séparer les choses :
 

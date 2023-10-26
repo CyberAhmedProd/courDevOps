@@ -16,7 +16,7 @@ Ajouter ce fichier dans l'index puis commitez-le.
 
 Voici à quoi ressemblent les 3 espaces de votre projet:
 
-![Screenshot](../images/04-commithello.svg)
+![Screenshot](../imgs/04-commithello.svg)
 
 **Note :** Pour tester votre programme, utilisez la commande `python hello.py`.
 

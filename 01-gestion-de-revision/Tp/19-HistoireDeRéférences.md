@@ -18,7 +18,7 @@ En lisant cette page de manuel, vous pourrez apprendre qu'il y a une différence
 
 Cette différence n'apparaît que sur les commits de fusion, qui comportent plusieurs parents ('d1cf1a7' dans la figure ci-dessous)
 
-![Commit Parents](../images/10-gitrevisions.png)
+![Commit Parents](../imgs/10-gitrevisions.png)
 
 *   'HEAD^' est un raccourci de 'HEAD^1', et désigne le **1er parent** de 'HEAD', et donc le commit '56cd8a9'.
 *   'HEAD^2' désigne le **2ème parent** de 'HEAD', et donc le commit 'ee5df4b'.

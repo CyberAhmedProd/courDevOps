@@ -171,5 +171,5 @@ Votre historique devrait ressembler à cela:
     ca170fa Ajout du poème de Richepin
     
 
-[Revenez dans le cours du TP](../ignore/)
+[Revenez dans le cours du TP](../03-ignore.md)
 -----------------------------------------

@@ -10,7 +10,7 @@ Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `
 `$ rm -Rf tpgit`  
 `$ cp -Rf ~/tpfiles/tpgit-enarriere1 tpgit`
 
-Pour les manipulations de ce chapitre, retournez dans le répertoire utilisé dans le chapitre [Revenir en arrière (1)](../enarriere1/)
+Pour les manipulations de ce chapitre, retournez dans le répertoire utilisé dans le chapitre [Revenir en arrière (1)](./05-RetourArriere1.md)
 
 Votre historique devrait être le suivant :
 

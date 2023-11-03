@@ -12,7 +12,7 @@ Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `
 
 Pour collaborer sur un projet, nous pouvons utiliser et partager par 'ssh' le dépôt d'un des collaborateurs, comme nous l'avons vu dans le chapitre précédent. Cependant cela oblige, d'une part, que la machine de ce collaborateur soit en permanence en fonctionnement et, d'autre part, que cette machine soit accessible depuis l'Internet (et donc sur un réseau public) et, enfin, que tous les collaborateurs aient un compte sur cette machine.
 
-Ces contraintes sont dans la majorité des cas bien trop fortes. De ce fait, les projets collaboratifs utilisent un dépôt dît de _référence_, hébergé sur un serveur Git. Plusieurs solutions sont disponibles. Elles sont listées dans le chapitre [Services Disponibles](../services/). Pour ce chapitre, nous allons utiliser un serveur [gitlab](https://www.gitlab.com/) et en particulier celui que le FIL met à disposition. Si vous utilisez un autre serveur, il vous suffira de modifier les urls en conséquence.
+Ces contraintes sont dans la majorité des cas bien trop fortes. De ce fait, les projets collaboratifs utilisent un dépôt dît de _référence_, hébergé sur un serveur Git. Plusieurs solutions sont disponibles. Elles sont listées dans le chapitre [Services Disponibles](../services/). Pour ce chapitre, nous allons utiliser un serveur [github](https://github.com/) et en particulier celui que le FIL met à disposition. Si vous utilisez un autre serveur, il vous suffira de modifier les urls en conséquence.
 
 Création d'un dépôt sur le serveur gitlab du FIL
 ------------------------------------------------

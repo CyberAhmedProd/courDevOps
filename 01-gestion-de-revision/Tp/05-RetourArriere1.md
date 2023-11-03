@@ -88,4 +88,4 @@ Votre historique devrait maintenant ressembler à cela:
 Aller plus loin : recherche de bugs
 -----------------------------------
 
-`git checkout` permet également de retrouver un commit qui a introduit un problème. Pour tester cette fonctionnalité vous pouvez effectuer l'exercice [Chercher le bug](../chercherbug/).
+`git checkout` permet également de retrouver un commit qui a introduit un problème. Pour tester cette fonctionnalité vous pouvez effectuer l'exercice [Chercher le bug](./exercies/02-chercherbug.md).

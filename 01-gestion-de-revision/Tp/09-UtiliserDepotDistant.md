@@ -4,11 +4,11 @@ Si, à ce stade, votre dépot se trouve dans un état instable, vous avez la pos
 
 Si vous ne l'avez pas déjà fait, récupérez les ressources utiles au TP en suivant les instructions décrites dans la page [Ressources pour le TP](../annexes/tpfiles/) des annexes.
 
-Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `~/tpfiles/tpgit-local` en exécutant les commandes suivantes :
+Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `tpfiles/tpgit-local` en exécutant les commandes suivantes :
 
 `$ cd`  
-`$ rm -Rf tpgit`  
-`$ cp -Rf ~/tpfiles/tpgit-local tpgit`
+`$ rm -rf tpgit`  
+`$ cp -rf tpfiles/tpgit-local tpgit`
 
 Pour collaborer sur un projet, nous pouvons utiliser et partager par 'ssh' le dépôt d'un des collaborateurs, comme nous l'avons vu dans le chapitre précédent. Cependant cela oblige, d'une part, que la machine de ce collaborateur soit en permanence en fonctionnement et, d'autre part, que cette machine soit accessible depuis l'Internet (et donc sur un réseau public) et, enfin, que tous les collaborateurs aient un compte sur cette machine.
 

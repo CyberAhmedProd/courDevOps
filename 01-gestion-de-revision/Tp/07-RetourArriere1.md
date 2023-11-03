@@ -4,20 +4,20 @@ Si, à ce stade, votre dépot se trouve dans un état instable, vous avez la pos
 
 Si vous ne l'avez pas déjà fait, récupérez les ressources utiles au TP en suivant les instructions décrites dans la page [Ressources pour le TP](../annexes/tpfiles/) des annexes.
 
-Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `~/tpfiles/tpgit-correction` en exécutant les commandes suivantes :
+Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `tpfiles/tpgit-correction` en exécutant les commandes suivantes :
 
 `$ cd`  
-`$ rm -Rf tpgit`  
-`$ cp -Rf ~/tpfiles/tpgit-correction tpgit`
+`$ rm -rf tpgit`  
+`$ cp -rf ~/tpfiles/tpgit-correction tpgit`
 
 Revenir en arrière avec revert
 ------------------------------
 
-Dans le chapitre [Revenir en arrière (1)](../enarriere1/), nous avons vu une première méthode permettant de _renverser_ un commit : le fichier **hello.py** supprimé lors d'un commit a été _retrouvé_ avec `git checkout`, puis remis dans le dépôt avec un `git commit`.
+Dans le chapitre [Revenir en arrière (1)](./05-RetourArriere1.md), nous avons vu une première méthode permettant de _renverser_ un commit : le fichier **hello.py** supprimé lors d'un commit a été _retrouvé_ avec `git checkout`, puis remis dans le dépôt avec un `git commit`.
 
 Cette manipulation consiste donc à créer un commit qui inverse les modifications introduites par un ancien commit, afin qu'au final elles soient annulées dans la version courante du dépôt. C'est une opération classique, qui porte le nom de _revert_ en anglais.
 
-Git dispose de la commande `git revert` pour effectuer en une seule opération ce que nous avions fait dans [Revenir en arrière (1)](../enarriere1/).
+Git dispose de la commande `git revert` pour effectuer en une seule opération ce que nous avions fait dans [Revenir en arrière (1)](./05-RetourArriere1.md).
 
 Votre historique actuel doit être semblable à :
 

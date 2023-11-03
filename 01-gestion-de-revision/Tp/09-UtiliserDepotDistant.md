@@ -19,7 +19,7 @@ Création d'un dépôt sur le serveur gitlab du FIL
 
 Vous allez d'abord créer un dépôt distant en utilisant le serveur gitlab du FIL.
 
-*   Connectez vous sur [https://gitlab-etu.fil.univ-lille1.fr/](https://gitlab-etu.fil.univ-lille1.fr/).
+*   Connectez vous sur [https://github.com/](https://github.com/).
 *   Authentifiez-vous avec votre login FIL.
 *   Créez un groupe privé dont le nom est préfixé par 'cristal-' ('cristal-binome1', par exemple)
 *   Ajoutez votre binôme dans le groupe. Dans le cas du serveur du FIL, il faut attendre que votre binôme s'y soit authentifié une première fois. Donnez-lui les permissions 'Master' (pour éviter de devoir régler plus finement les droits d'accés).
@@ -32,7 +32,7 @@ Nous allons réutiliser le dépôt que vous avez créé en local (répertoire 't
 
 Il faut tout d'abord indiquer à Git de créer un _lien_ vers le dépôt géré par le serveur. Suivez pour cela l'instruction que vous donne gitlab. Elle ressemble à :
 
-    $ git remote add origin https://gitlab-etu.fil.univ-lille1.fr/cristal-binome1/tpgit.git
+    $ git remote add origin https://github.com/cristal-binome1/tpgit.git
     
 
 Vous comprendrez plus tard ce que fait cette commande ; pour l'instant, considérez simplement que vous avez créé en local un lien ('_remote add_') nommé '_origin_' vers l'URL du dépôt stocké sur le serveur gitlab.  
@@ -66,7 +66,7 @@ Imaginons que vous êtes un nouveau collaborateur au projet. Vous devez récupé
 Retournez dans votre répertoire racine, et utilisez, comme dans le chapitre précédent, une commande `git clone` semblable à :
 
     $ cd ~
-    $ git clone https://gitlab-etu.fil.univ-lille1.fr/cristal-binome1/tpgit.git
+    $ git clone https://github.com/cristal-binome1/tpgit.git
     
 
 Une copie du dépôt 'tpgit' du serveur est alors créée dans un répertoire local 'tpgit' (par défaut, Git créé un répertoire en réutilisant le nom du dépôt mais sans le suffixe .git).
@@ -93,7 +93,7 @@ Supprimez votre répertoire 'tpgit' et procédez comme dans le paragraphe préc�
 
     $ cd ~
     $ rm -rf tpgit
-    $ git clone https://gitlab-etu.fil.univ-lille1.fr/cristal-binomex/tpgit.git
+    $ git clone https://github.com/cristal-binomex/tpgit.git
     
 
 Modifications collaboratives (1)

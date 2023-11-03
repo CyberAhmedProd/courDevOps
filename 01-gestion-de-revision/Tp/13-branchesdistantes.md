@@ -5,10 +5,10 @@ Création de branche distante
 
 En fait, c'est une notion que nous avons déjà rencontrée dans le paragraphe ['Utilisez un dépôt distant'](../distant/). En effet, nous avions commencé par utiliser la commande `git remote` qui permet d'enregistrer dans le dépôt local l'adresse du dépôt distant sous forme de nom court :
 
-    $ git remote add origin https://gitlab-etu.fil.univ-lille1.fr/cristal-binome1/tpgit.git
+    $ git remote add origin https://github.com/cristal-binome1/tpgit.git
     
 
-'origin' peut ainsi être utilisé à la place de 'https://gitlab-etu.fil.univ-lille1.fr/cristal-binome1/tpgit.git'. Ouf !
+'origin' peut ainsi être utilisé à la place de 'https://github.com/cristal-binome1/tpgit.git'. Ouf !
 
 Remarque: 'origin' est usuellement choisi mais nous aurions pu utiliser n'importe quel nom.
 
@@ -30,7 +30,7 @@ Clonage d'un dépôt distant
 
 Nous avons par ailleurs utilisé la commande `git clone` qui permet de récupérer un dépôt distant :
 
-    $ git clone https://gitlab-etu.fil.univ-lille1.fr/cristal-binome1/tpgit.git
+    $ git clone https://github.com/cristal-binome1/tpgit.git
     
 
 Cette commande procède aux actions suivantes :
@@ -108,7 +108,7 @@ Les commandes
 
 et
 
-    $ git clone https://gitlab-etu.fil.univ-lille1.fr/cristal-binome1/tpgit.git`
+    $ git clone https://github.com/cristal-binome1/tpgit.git`
     
 
 que nous avons utilisées jusqu'à présent ont permis de créer un lien fort entre les branches 'master' locale et distante.  

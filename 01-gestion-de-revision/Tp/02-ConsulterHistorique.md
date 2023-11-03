@@ -110,4 +110,4 @@ Pour avoir plus de détail sur un commit particulier vous pouvez utiliser `git s
 Pour aller plus loin...
 -----------------------
 
-Si vous voulez vous exercer d'avantage sur la manipulation des 3 espaces de GIT (espace de travail, index et dépôt), allez à l'exercice [Brassens aurait adoré GIT !](../autonomie1/)
+Si vous voulez vous exercer d'avantage sur la manipulation des 3 espaces de GIT (espace de travail, index et dépôt), allez à l'exercice [Brassens aurait adoré GIT !](./exercies/01-autonomie1.md)

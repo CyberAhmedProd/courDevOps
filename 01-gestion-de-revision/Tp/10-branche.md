@@ -4,7 +4,7 @@ Si, à ce stade, votre dépot se trouve dans un état instable, vous avez la pos
 
 Si vous ne l'avez pas déjà fait, récupérez les ressources utiles au TP en suivant les instructions décrites dans la page [Ressources pour le TP](../annexes/tpfiles/) des annexes.
 
-Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `~/tpfiles/tpgit-local` en exécutant les commandes suivantes :
+Il vous suffit ensuite de supprimer votre dépot puis de copier le répertoire `tpfiles/tpgit-local` en exécutant les commandes suivantes :
 
 `$ cd`  
 `$ rm -Rf tpgit`  

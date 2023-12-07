@@ -28,7 +28,7 @@ Enfin, il faut lancer la commande source pour charger votre script d'auto-comple
 
     source /etc/bash_completion.d/docker-machine-prompt.bash
 
-Voici la **commande qui permet d'installer Docker Machine sous Linux**.
+Voici la **commande qui permet d'installer Docker Machine sous Windows**.
 
     $ if [[ ! -d "$HOME/bin" ]]; then mkdir -p "$HOME/bin"; fi && \
     curl -L https://github.com/docker/machine/releases/download/v0.8.2/docker-machine-Windows-x86_64.exe > "$HOME/bin/docker-machine.exe" && \

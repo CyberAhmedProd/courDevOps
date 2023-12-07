@@ -136,9 +136,9 @@ Résultat :
 
 Le résultat nous indique distinctement, que nos futurs commandes docker sur le shell courant s'exécuteront directement sur la machine Docker vbox-test.
 
-Afin de vous prouver que c'est effectivement le cas, je vais télécharger et exécuter l'image [httpd](https://hub.docker.com/_/httpd) sur le shell courant :
+Afin de vous prouver que c'est effectivement le cas, je vais télécharger et exécuter l'image [alpine](https://hub.docker.com/_/alpine) sur le shell courant :
 
-    docker run -d -p 8000:80 --name vbox-test-httpd htppd
+    docker run -d -p 8000:80 --name vbox-test-alpine alpine sh -c 'while sleep 3600; do :; done'
 
 À présent, ouvrez un nouveau terminal et vérifiez les conteneurs disponibles, vous verrez ainsi que vous ne retrouverez pas le conteneur vbox-test-httpd créé précédemment :
 
@@ -299,7 +299,7 @@ Nous allons vérifier subséquemment sur notre console si notre instance EC2 est
 
 Cool, notre instance EC2 aws-test est bien présente. Maintenant vérifions si le port 8000 est bien autorisé dans le security group lié à cette instance :
 
-![Vérification du security group de l'instance EC2 créée par Docker Machine](./images/security-group-check.jpg)
+![Vérification du security group de l'instance EC2 créée par Docker Machine](/images/articles/docker/docker-machine/aws/security-group-check.jpg)
 
 Le security group autorise bel et bien le port 8000, vous pouvez dès à présent lancer vos conteneurs directement sur votre instance EC2 depuis votre machine maître. Dans cet exemple nous allons instancier l'image [httpd](https://hub.docker.com/_/httpd) dans notre nouvelle machine Docker aws-test .
 

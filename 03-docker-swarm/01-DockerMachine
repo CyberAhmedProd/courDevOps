@@ -1,11 +1,11 @@
-Introduction
+# Introduction
 ------------
 
 Docker Machine est un **outil de provisioning et de gestion des hôtes Docker** (hôtes virtuels exécutant le moteur Docker). Vous pouvez utiliser Docker Machine pour créer des hôtes Docker sur votre ordinateur personnel ou sur le datacenter de votre entreprise à l'aide d'un logiciel de virtualisation tel que VirtualBox ou VMWare, vous pouvez aussi déployer vos machines virtuelles chez des fournisseurs de cloud, tels que Azure, AWS, Google Compute Engine, etc ..
 
 À l'aide de la commande docker-machine, vous pouvez démarrer, inspecter, arrêter et redémarrer un hôte géré ou mettre à niveau le client et le moteur Docker et configurer un client Docker pour qu'il puisse communiquer avec votre hôte. En bref il **crée automatiquement des hôtes Docker**, y **installe le moteur Docker**, puis **configure les clients docker**.
 
-Installation de Docker Machine
+# Installation de Docker Machine
 ------------------------------
 
 Voici la **commande qui permet d'installer Docker Machine sous Linux**.
@@ -30,7 +30,7 @@ Enfin, il faut lancer la commande source pour charger votre script d'auto-comple
 
 Pour ceux qui ont installé Docker sur une **machine Windows** pro avec HyperV d'activé, il n y'a pas besoin d'installation car Docker machine est installé par défaut.
 
-Découverte des drivers et des commandes Docker Machine
+# Découverte des drivers et des commandes Docker Machine
 ------------------------------------------------------
 
 Docker machine utilise le concept des **drivers** (en fr : pilotes). Les drivers vous permettent depuis votre Docker machine. de créer un ensemble complet de ressources sur vos machines virtuelles sur des services tiers tels qu'Azure, Amazon, VirtualBox, etc. Vous retrouverez la liste des différents drivers [ici](https://docs.docker.com/machine/drivers/).

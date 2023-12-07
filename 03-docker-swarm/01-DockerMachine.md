@@ -1,10 +1,11 @@
-# Introduction
+Introduction
+------------
 
 Docker Machine est un **outil de provisioning et de gestion des hôtes Docker** (hôtes virtuels exécutant le moteur Docker). Vous pouvez utiliser Docker Machine pour créer des hôtes Docker sur votre ordinateur personnel ou sur le datacenter de votre entreprise à l'aide d'un logiciel de virtualisation tel que VirtualBox ou VMWare, vous pouvez aussi déployer vos machines virtuelles chez des fournisseurs de cloud, tels que Azure, AWS, Google Compute Engine, etc ..
 
 À l'aide de la commande docker-machine, vous pouvez démarrer, inspecter, arrêter et redémarrer un hôte géré ou mettre à niveau le client et le moteur Docker et configurer un client Docker pour qu'il puisse communiquer avec votre hôte. En bref il **crée automatiquement des hôtes Docker**, y **installe le moteur Docker**, puis **configure les clients docker**.
 
-# Installation de Docker Machine
+Installation de Docker Machine
 ------------------------------
 
 Voici la **commande qui permet d'installer Docker Machine sous Linux**.
@@ -13,7 +14,7 @@ Voici la **commande qui permet d'installer Docker Machine sous Linux**.
     curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
     sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 
-Pour pouvoir **activer l'auto-completion des commandes Docker Machine**, il suffit de créer un script qu'on va nommer docker-machine-prompt.bash dans le dossier /etc/bash_completion.d ou dans le dossier /usr/local/etc/bash_completion.d et de coller dedans le contenu ci-dessous :
+Pour pouvoir **activer l'auto-completion des commandes Docker Machine**, il suffit de créer un script qu'on va nommer docker-machine-prompt.bash dans le dossier /etc/bash\_completion.d ou dans le dossier /usr/local/etc/bash\_completion.d et de coller dedans le contenu ci-dessous :
 
     sudo nano /etc/bash_completion.d/docker-machine-prompt.bash
 
@@ -27,9 +28,15 @@ Enfin, il faut lancer la commande source pour charger votre script d'auto-comple
 
     source /etc/bash_completion.d/docker-machine-prompt.bash
 
+Voici la **commande qui permet d'installer Docker Machine sous Linux**.
+
+    $ if [[ ! -d "$HOME/bin" ]]; then mkdir -p "$HOME/bin"; fi && \
+    curl -L https://github.com/docker/machine/releases/download/v0.8.2/docker-machine-Windows-x86_64.exe > "$HOME/bin/docker-machine.exe" && \
+    chmod +x "$HOME/bin/docker-machine.exe"
+    
 Pour ceux qui ont installé Docker sur une **machine Windows** pro avec HyperV d'activé, il n y'a pas besoin d'installation car Docker machine est installé par défaut.
 
-# Découverte des drivers et des commandes Docker Machine
+Découverte des drivers et des commandes Docker Machine
 ------------------------------------------------------
 
 Docker machine utilise le concept des **drivers** (en fr : pilotes). Les drivers vous permettent depuis votre Docker machine. de créer un ensemble complet de ressources sur vos machines virtuelles sur des services tiers tels qu'Azure, Amazon, VirtualBox, etc. Vous retrouverez la liste des différents drivers [ici](https://docs.docker.com/machine/drivers/).
@@ -46,8 +53,8 @@ Nous allons voir ci-dessous comment créer des hôtes Docker onpremise avec le d
 
 Je suis actuellement sous Linux avec la distribution **Fedora 30**. Si vous êtes sous une autre distribution alors la configuration risque d'être un peu différente. Dans tous les cas, voici la **configuration requise pour le driver VirtualBox** :
 
-* Virtualbox à partir de la version 5
-* Le module de noyau vboxdrv
+*   Virtualbox à partir de la version 5
+*   Le module de noyau vboxdrv
 
 Je vous fais confiance pour l'installation de VirtualBox, mais si jamais vous rencontrer des problèmes, alors n'hésitez pas à m'en faire part dans l'espace commentaire, il est prévu pour ça 😉. En ce qui me concerne j'ai téléchargé VirtualBox en version 6.0.10.
 
@@ -71,7 +78,9 @@ Résultat :
 
 Une fois les deux prérequis de configurations satisfaites, vous pouvez dès lors créer votre hôte Docker en lançant la commande create en utilisant le driver virtualbox avec les options par défaut :
 
-    docker-machine create --driver virtualbox vbox-test
+    docker-machine create -d virtualbox --virtualbox-memory=4096 \
+    --virtualbox-cpu-count=4 --virtualbox-disk-size=40960 \
+    --virtualbox-no-vtx-check default
 
 Résultat :
 
@@ -169,7 +178,7 @@ Résultat :
     CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                  NAMES
     347723c8291f        httpd               "httpd-foreground"   3 minutes ago       Up 4 minutes        0.0.0.0:8000->80/tcp   vbox-test-httpd
 
-Pour vous **assurer que le client Docker est automatiquement configuré au début de chaque session de shell**, vous pouvez alors intégrer la commande eval $(docker-machine env vbox-test) votre fichier ~/.bash_profile.
+Pour vous **assurer que le client Docker est automatiquement configuré au début de chaque session de shell**, vous pouvez alors intégrer la commande eval $(docker-machine env vbox-test) votre fichier ~/.bash\_profile.
 
 Si vous pensez avoir fini d'utiliser une machine Docker, vous pouvez l'**arrêter** avec la commande docker-machine stop et la **redémarrer** plus tard avec la commande docker-machine start, example :
 
@@ -242,8 +251,8 @@ Pour changer un peu du déploiement local, nous utiliserons cette fois-ci un ser
 
 Pour créer des machines sur AWS , vous devez fournir deux paramètres :
 
-* un ID de clé d'accès AWS
-* une clé d'accès secrète AWS
+*   un ID de clé d'accès AWS
+*   une clé d'accès secrète AWS
 
 Rendez-vous dans le service IAM depuis votre console AWS :
 
@@ -302,11 +311,11 @@ Deuxièmement, nous allons télécharger et exécuter notre image httpd
 
     docker run -d -p 8000:80 --name httpdc httpd
 
-Si vous visitez la page [http://VOTRE_IP:8000](http://VOTRE_IP:8000), vous observerez alors le message "It works!".
+Si vous visitez la page [http://VOTRE\_IP:8000](http://VOTRE_IP:8000), vous observerez alors le message "It works!".
 
 ### Supprimer vos machines Docker
 
-Comme je n'ai plus besoin de mes machines, je peux alors les supprimer. Pour ce faire, je vais utiliser la commande docker-machine rm &lt;MACHINE NAME&gt;. Cette commande aura pour effet de **supprimer définitivement la machine Docker** de votre plateforme de gestion de virtualisation locale mais aussi de la supprimer de votre fournisseur de cloud, si jamais vous en utilisez un.
+Comme je n'ai plus besoin de mes machines, je peux alors les supprimer. Pour ce faire, je vais utiliser la commande docker-machine rm <MACHINE NAME>. Cette commande aura pour effet de **supprimer définitivement la machine Docker** de votre plateforme de gestion de virtualisation locale mais aussi de la supprimer de votre fournisseur de cloud, si jamais vous en utilisez un.
 
     docker-machine rm -f aws-test
 

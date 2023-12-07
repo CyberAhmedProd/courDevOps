@@ -203,19 +203,19 @@ Si vous avez déjà un switch réseau externe, ignorez cette configuration et al
 
 Ouvrez le gestionnaire Hyper-V et sélectionnez le "Gestionnaire de commutateur virtuel" dans le panneau d'actions de droite :
 
-![selection du gestionnaire de switch virtuel hyper V](/images/articles/docker/docker-machine/hyperv/hyperv-selection-vswitch.jpg)
+![selection du gestionnaire de switch virtuel hyper V](./images/hyperv-selection-vswitch.jpg)
 
 Ensuite, **configurez un nouveau switch réseau externe** à utiliser à la place du switch réseau DockerNAT :
 
-![creation d'un nouveau switch externe HyperV partie 1](/images/articles/docker/docker-machine/hyperv/nouveau-switch-externe-hyperV.jpg)
+![creation d'un nouveau switch externe HyperV partie 1](./images/nouveau-switch-externe-hyperV.jpg)
 
 Pour cet exemple, nous allons créer un switch virtuel appelé "Docker machine switch".
 
-![creation d'un nouveau switch externe HyperV partie 2](/images/articles/docker/docker-machine/hyperv/nouveau-switch-externe-hyperV-2.jpg)
+![creation d'un nouveau switch externe HyperV partie 2](./images/nouveau-switch-externe-hyperV-2.jpg)
 
 Ignorer l'avertissement en appuyant sur le bouton "oui".
 
-![activation du nouveau switch externe HyperV](/images/articles/docker/docker-machine/hyperv/activation-nouveau-switch-externe-hyperV.jpg)
+![activation du nouveau switch externe HyperV](./images/activation-nouveau-switch-externe-hyperV.jpg)
 
 Une fois le switch externe créé, on peut enfin l'utiliser pour déployer notre machine Docker depuis le driver hyperv. Lancez un powershell en mode administrateur et exécuter la commande suivante :
 
@@ -256,19 +256,19 @@ Pour créer des machines sur AWS , vous devez fournir deux paramètres :
 
 Rendez-vous dans le service IAM depuis votre console AWS :
 
-![selection du service IAM dans AWS Console](/images/articles/docker/docker-machine/aws/iam-aws-selection.jpg)
+![selection du service IAM dans AWS Console](./images/iam-aws-selection.jpg)
 
 Une fois rendu dans le service IAM, si vous n'avez pas encore d'utilisateur, créez-en un en appuyant sur le bouton "Ajouter un utilisateur" :
 
-![nouveau utilisateur AWS](/images/articles/docker/docker-machine/aws/new-user-aws.jpg)
+![nouveau utilisateur AWS](./images/new-user-aws.jpg)
 
 Après cela, cliquez sur le bouton "Créer une clé d'accès" :
 
-![Création des clés d'accès AWS](/images/articles/docker/docker-machine/aws/new-access-key.jpg)
+![Création des clés d'accès AWS](./images/new-access-key.jpg)
 
 Récupérer maintenant votre ID et clé d'accès secrète de votre compte AWS :
 
-![Récupération des clés d'accès AWS](/images/articles/docker/docker-machine/aws/get-access-key.jpg)
+![Récupération des clés d'accès AWS](./images/get-access-key.jpg)
 
 Configurer les informations d'identification en utilisant le fichier d'informations d'identification standard du fichier Amazon AWS ~/.aws/credentials, de sorte que vous n'ayez plus besoin de les saisir à chaque fois que vous exécutez la commande create. Voici un exemple du fichier d'identification :
 
@@ -295,11 +295,11 @@ Résultat :
 
 Nous allons vérifier subséquemment sur notre console si notre instance EC2 est bien présente dessus. Pour cela, rendez-vous dans le service EC2 et assurez-vous d'être bien dans la même région que celle lancée dans la commande create :
 
-![Vérification de l'instance EC2 créée par Docker Machine](/images/articles/docker/docker-machine/aws/new-ec2-instance-created-by-docker-machine.jpg)
+![Vérification de l'instance EC2 créée par Docker Machine](./images/new-ec2-instance-created-by-docker-machine.jpg)
 
 Cool, notre instance EC2 aws-test est bien présente. Maintenant vérifions si le port 8000 est bien autorisé dans le security group lié à cette instance :
 
-![Vérification du security group de l'instance EC2 créée par Docker Machine](/images/articles/docker/docker-machine/aws/security-group-check.jpg)
+![Vérification du security group de l'instance EC2 créée par Docker Machine](./images/security-group-check.jpg)
 
 Le security group autorise bel et bien le port 8000, vous pouvez dès à présent lancer vos conteneurs directement sur votre instance EC2 depuis votre machine maître. Dans cet exemple nous allons instancier l'image [httpd](https://hub.docker.com/_/httpd) dans notre nouvelle machine Docker aws-test .
 

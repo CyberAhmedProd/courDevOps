@@ -6,46 +6,14 @@ Vous pouvez créer un workflow d’intégration continue (CI) pour générer et 
 Dans cet article
 ----------------
 
-*   [
-
-    Introduction
-    
-    ](#introduction)
-*   [
-    
-    Prérequis
-    
-    ](#prerequisites)
-*   [
-    
-    Utilisation d’un workflow de démarrage pour Python
-    
-    ](#using-a-python-starter-workflow)
-*   [
-    
-    Spécification d’une version de Python
-    
-    ](#specifying-a-python-version)
-*   [
-    
-    Installer les dépendances
-    
-    ](#installing-dependencies)
-*   [
-    
-    Test de votre code
-    
-    ](#testing-your-code)
-*   [
-    
-    Empaquetage des données de workflow en tant qu’artefacts
-    
-    ](#packaging-workflow-data-as-artifacts)
-*   [
-    
-    Publication dans des registres de package
-    
-    ](#publishing-to-package-registries)
+*   [Introduction](#introduction)
+*   [Prérequis](#prerequisites)
+*   [Utilisation d’un workflow de démarrage pour Python](#using-a-python-starter-workflow)
+*   [Spécification d’une version de Python](#specifying-a-python-version)
+*   [Installer les dépendances](#installing-dependencies)
+*   [Test de votre code](#testing-your-code)
+*   [Empaquetage des données de workflow en tant qu’artefacts](#packaging-workflow-data-as-artifacts)
+*   [Publication dans des registres de package](#publishing-to-package-registries)
 
 [Introduction](#introduction)
 -----------------------------

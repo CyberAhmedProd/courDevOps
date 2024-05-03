@@ -41,6 +41,7 @@ Il est possible de restreindre l'activation d'un Workflow à une ou plusieurs br
 
 Par exemple, si le fichier commence par la séquence suivante :
 
+```bash
 on:
 
   push:
@@ -50,7 +51,7 @@ on:
     path-ignore:
 
     - 'docs/\*\*'
-
+```
 Alors le workflow sera déclenché dès qu'un push aura lieu sur la branche master, sauf si les modifications ne portent que sur des fichiers se trouvant sous le répertoire docs.
 
 ### 2.2 Jobs, Steps
@@ -66,7 +67,7 @@ Pour un confort optimal de CI/CD, les runners proposés par GitHub Actions sont 
 Chaque job peut tourner sur une plateforme différente, mais tous les steps d'un même job s'exécutent les uns à la suite des autres sur la même instance. Ils partagent donc le système de fichiers : les fichiers qu'un step dépose ou modifie sont disponibles pour les steps suivants du même job.
 
 Voici un exemple de section jobs : la déclaration de ces simples steps parle d'elle-même.
-
+```bash
 jobs:
 
   compiler\mon\module:
@@ -104,6 +105,7 @@ jobs:
         echo "Will now publish"
 
         npm publish
+```
 
 Pour les moins familiers de la syntaxe YAML, on peut préciser ici que la clé steps introduit une liste dont les éléments arrivent par un tiret. Par exemple, ici les deux steps du job compiler\mon\module portent une propriété run, mais seul le deuxième a la propriété working-directory.
 
@@ -116,15 +118,16 @@ De plus, le deuxième job publier\mon\module stipule une clause needs : il dépe
 Certains travaux de CI/CD nécessitent évidemment des secrets (clés d'API, mots de passe, etc.). On les enregistre sous la forme de couples clé-valeur dans les **Settings** du projet (les valeurs ne sont plus consultables par la suite). Les steps accèdent aux secrets en utilisant : ${{ secrets.NomDeSecret }}.
 
 Par exemple, dans un step, l'appel d'une commande avec un argument provenant des secrets sous le nom MaCleApi se ferait comme ceci :
-
+```bash
     steps:
 
     - run: ma-commande.sh ${{ secrets.MaCleApi }}
+```
 
 Les variables d'environnement, quant à elles, peuvent être fournies soit à un step en particulier, soit à l'ensemble d'un job. Ces deux éléments prennent en charge la propriété env, qui est naturellement une map YAML de couples clé-valeur.
 
 Une variable d'environnement peut bien sûr contenir la valeur d'un secret.
-
+```bash
 jobs:
 
   my\job\with\db:
@@ -140,6 +143,7 @@ jobs:
     steps:
 
     - run: ./upgrade-db.sh
+```
 
 Cependant, certains secrets ne doivent pas être confiés à n'importe quel workflow sur n'importe quelle branche. Nous avons évoqué comment protéger les abus sur les fichiers de workflow par des contributeurs non autorisés, mais même en rejetant une revue de code pour empêcher le merge des changements, les workflows sont néanmoins exécutés.
 
@@ -154,7 +158,7 @@ GitHub Actions propose un mécanisme standard utilisant une action communautaire
 Ici, le mainteneur de l'action n'est autre que l'équipe GitHub elle-même, et l'action s'appelle actions/checkout@v2.
 
 Voici typiquement comment débute le premier job d'un workflow devant travailler avec le code du projet :
-
+```bash
 jobs:
 
   compiler\mon\module:
@@ -174,13 +178,13 @@ jobs:
         npm install
 
         npm run test
-
+```
 On aurait pu se passer de ce bloc réutilisable actions/checkout@v2 et effectuer la commande git clone explicitement, à condition d'avoir paramétré ce qu'il faut de secrets et de clés SSH ; mais c'est évidemment plus lisible ainsi, et de plus le code (en NodeJS) de l'action elle-même est ouvert **\[5\]**.
 
 ### 2.5 Conditions
 
 Chaque job ou step peut être assujetti à une condition d'exécution. Pour ce faire, on instruira la clause if sur le job ou le step qui ne doit travailler que dans certains cas.
-
+```bash
 steps:
 
   - name: Màj DB Peut-être
@@ -190,6 +194,7 @@ steps:
     run: composer run migrate-db
 
     if: ${{ env.ONE + env.TWO }}
+```
 
 L'expression qui constitue la condition peut utiliser des informations de différentes provenances, dont entre autres :
 
@@ -204,10 +209,11 @@ Voyons maintenant comment mettre des données à disposition des steps et jobs q
 ### 2.6 Partage de données
 
 Au sein d'un job, les steps s'exécutent en séquence. Chaque step peut consommer les résultats de steps antérieurs du même job, du moment qu'ils ont positionné leurs valeurs de sortie selon une syntaxe particulière :
-
+```bash
 run: |
 
   echo "::set-output name=ma\valeur::glmf"
+```
 
 Toute commande ou tout exécutable d'un step, qui effectue cette sortie standard, a pour effet de rendre disponible aux steps suivants la donnée glmf pour l'expression ${{ steps.<id\du\step\>.outputs.<ma\valeur\> }}.
 
@@ -218,7 +224,7 @@ Sans entrer dans le détail, précisons que sur un modèle similaire, les jobs p
 Lorsque l'échange de simples valeurs ne suffit pas entre deux jobs, il est possible de stocker des artifacts : ce sont des fichiers ou dossiers qu'on fait persister d'un job à l'autre. Le filesystem est remis à neuf pour chaque job, mais les artifacts sont stockés dans un emplacement différent, fourni par GitHub Actions, et on les téléverse/télécharge grâce à deux actions préconstruites **\[7\]**.
 
 Un job stocke un artifact comme ceci :
-
+```bash
 jobs:
 
   job-fabrication:
@@ -238,9 +244,9 @@ jobs:
           name: glmf.so
 
           path: outputs/lib-mon-truc.so
-
+```
 Et un job ultérieur peut télécharger l'artifact par :
-
+```bash
   job-diffusion:
 
     steps:
@@ -256,7 +262,7 @@ Et un job ultérieur peut télécharger l'artifact par :
       - name: Envoyer aux FTP amis
 
         run: ./envoyer.sh glmf.so
-
+```
 Les artifacts restent conservés chez GitHub Actions pour une certaine durée (par défaut 90 jours) et sont accessibles via l'interface web.
 
 # 3 Minuteurs et manivelle
@@ -267,7 +273,7 @@ Une grande variété d'événements déclencheurs de workflows permet de couvrir
 Mais on peut souligner l'existence de deux actions en particulier qui s'avèrent pratiques dans certains cas : le déclenchement manuel, par lequel on peut passer des paramètres personnalisés à chaque lancement, et le déclenchement planifié.
 
 Le démarrage manuel s'obtient en utilisant l'événement workflow\dispatch. Une section inputs permet de préciser les arguments attendus :
-
+```bash
 on:
 
   workflow\dispatch:
@@ -287,11 +293,11 @@ on:
         required: false
 
         default: 'SNAPSHOT'
-
+```
 Ceci aura pour effet de présenter à l'utilisateur, au moment où il déclenchera le workflow, une popup de saisie pour les deux paramètres précisés dans les inputs.
 
 Quant au démarrage planifié, il s'agit d'un classique cron pour l'événement schedule (plusieurs programmations possibles) :
-
+```bash
 on:
 
   schedule:
@@ -299,6 +305,7 @@ on:
    - cron: '0 10 \* \* MON'
 
    - cron: '30 12 \* \* SUN'
+```
 
 # 4 Écosystème d'actions
 ------------------------
@@ -310,7 +317,7 @@ GitHub Actions fournit un toolkit pour rédiger des actions réutilisables **\[1
 Par exemple, une action personnalisée en Node se présente comme un repository mon-nom/mon-action, comportant à la racine un manifeste nommé action.yml. Il précise les arguments attendus et les valeurs de sortie de ce qui sera donc un step dans le workflow de quelqu'un, et il indique le fichier .js d'entrée. Le reste est un projet Node comme un autre.
 
 Le tout s'utilise dans un job comme ceci :
-
+```bash
 your-job:
 
     steps:
@@ -322,7 +329,7 @@ your-job:
         with:
 
           un-arg: "glmf"
-
+```
 # 5 Ligne de commande
 ---------------------
 
@@ -335,15 +342,16 @@ Voyons maintenant de quels outils en ligne de commande nous disposons.
 Le programme gh **\[1****1****\]** est une sorte d'édition allégée de ce qu'on peut normalement faire avec la GUI du site GitHub.com.
 
 La page du projet donne les instructions d'installation pour toutes les plateformes. Il s'agit d'un outil pour consulter et gérer pull request, issues et releases. Mais plus précisément pour ce qui nous intéresse ici, il va aussi nous permettre de configurer les secrets et de superviser l'exécution des workflows. On commence par s'authentifier avec un compte GitHub :
-
+```bash
 $ gh auth statusYou are not logged into any GitHub hosts. Run gh auth login to authenticate.$ gh auth login? What account do you want to log into? \[Use arrows to move, type to filter\]
 
 \> GitHub.com
 
   GitHub Enterprise Server
+```
 
 Suite à quoi, après d'autres questions concernant le nom du compte et la clé SSH à utiliser, on nous invite à pointer un navigateur sur une URL éphémère pour finaliser l'appairage. Puis on peut vérifier que l'authentification est prête :
-
+```bash
 $ gh auth status
 
 github.com
@@ -353,23 +361,23 @@ github.com
   ✓ Git operations for github.com configured to use ssh protocol.
 
   ✓ Token: \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
-
+```
 Ensuite, on se place dans le repository et on peut gérer les secrets :
-
+```bash
 ~/projects/my-repo $ gh secret list
 
 AWS\ACCESS\KEY\ID      Updated 2021-01-12
 
 AWS\SECRET\ACCESS\KEY Updated 2021-01-12~/projects/my-repo $ gh secret set NEW\SECR -b valeur\confidentielle✓ Set secret NEW\SECR for my-org/my-repo
-
+```
 L'autre opération importante que l'outil nous permet de faire est la vérification de l'état des checks d'une PR, c'est-à-dire les résultats de workflows qu'elle a déclenchés. Noter que ces checks ne concernent pas que les GitHub Actions, mais également n'importe quel autre service de CI/CD sur lequel le repository a été branché :
-
+```bash
 ~/projects/my-repo $ gh pr listShowing 2 of 2 open pull requests in my-org/my-repo
 
 #699 <...>#692 <...>
 
 ~/projects/my-repo $ gh pr checks 699All checks were successful0 failing, 1 successful, and 0 pending checks✓ ci/circleci: build    https://circleci.com/gh/...
-
+```
 ### 5.2 Exécution locale de workflows
 
 La mise au point de workflows peut s'avérer laborieuse, surtout en raison de la nécessité de provoquer des merge et autres opérations historisées sur le repository.

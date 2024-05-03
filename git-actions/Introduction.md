@@ -23,19 +23,6 @@ Il est possible de déclarer plusieurs fichiers de workflow : chacun réagit à 
 
 Avant d'étudier les possibilités de configuration, il est important de noter que le manifeste de déroulement du CI/CD se trouve au sein du repo lui-même : aussi, à moins de mettre en place des règles avancées de protection de fichiers et de branches (voir encadré), le contrôle en est laissé aux développeurs du projet.
 
-#### Code Owners
-
-Depuis 2017, il est possible de protéger la modification de certains fichiers du repository GitHub au moyen d'un fichier .github/CODEOWNERS **\[1\]**. Si un tel fichier est présent, alors GitHub s'y réfère automatiquement lors de chaque pull request, afin de contacter les référents qui y sont mentionnés pour leur permettre d'éventuellement rejeter la demande.
-
-Le Code Owners est un simple fichier texte, qui liste des règles de protection sur des chemins de fichiers. Typiquement, pour empêcher que des contributeurs ne modifient quoi que ce soit au dossier .github, et donc ni les actions de CI/CD ni le fichier CODEOWNERS lui-même, on pourrait y écrire ceci :
-
-/.github/   @monGithubHandle
-
-Cette ligne aurait pour effet d'envoyer une demande de code review à la personne (ou l'équipe) indiquée, dès lors qu'une pull request (PR) contient un changement dans un ou plusieurs fichiers du répertoire .github/.
-
-Toutefois, signaler ne suffit pas : par défaut, la validation d'un code review n'est pas indispensable. Pour obliger la PR à obtenir le feu vert du mainteneur, il faut avoir coché, pour les branches protégées dans les **Settings** du repository, l'option **Require review from Code Owners**.
-
-Voir aussi les considérations de sécurité en 2.3.
 
 # 2 Anatomie de la configuration
 --------------------------------

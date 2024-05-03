@@ -72,7 +72,11 @@ Le tableau ci-dessous décrit les emplacements du cache d’outils pour chaque e
 | Cache d’outils Python | /opt/hostedtoolcache/Python/*     | /Users/runner/hostedtoolcache/Python/*| C:\hostedtoolcache\windows\Python\*|
 | Cache d’outils PyPy    | /opt/hostedtoolcache/PyPy/*    | /Users/runner/hostedtoolcache/PyPy/*| C:\hostedtoolcache\windows\PyPy\*|
 
-
+| Month    | Savings |
+| -------- | ------- |
+| January  | $250    |
+| February | $80     |
+| March    | $420    |
 
 Si vous utilisez un exécuteur auto-hébergé, vous pouvez configurer l’exécuteur afin qu’il utilise l’action `setup-python` pour gérer vos dépendances. Pour plus d’informations, consultez [Utilisation de setup-python avec un exécuteur auto-hébergé](https://github.com/actions/setup-python#using-setup-python-with-a-self-hosted-runner) dans le fichier README `setup-python`.
 

@@ -66,36 +66,13 @@ Pour utiliser une version préinstallée de Python ou de PyPy sur un exécuteur 
 L’action `setup-python` est recommandée pour utiliser Python avec GitHub Actions, car cela garantit un comportement cohérent sur tous les exécuteurs et toutes les versions de Python. Si vous utilisez un exécuteur auto-hébergé, vous devez installer Python et l’ajouter à `PATH`. Pour plus d’informations, consultez l’[action `setup-python`](https://github.com/marketplace/actions/setup-python).
 
 Le tableau ci-dessous décrit les emplacements du cache d’outils pour chaque exécuteur hébergé dans GitHub.
+|          | Month    | Ubuntu |Mac |Windows |
+| -------- | -------- | ------- |------- |
+| Répertoire du cache d’outils  | /opt/hostedtoolcache/*  | /Users/runner/hostedtoolcache/*| C:\hostedtoolcache\windows\* |
+| Cache d’outils Python | /opt/hostedtoolcache/Python/*     | /Users/runner/hostedtoolcache/Python/*| C:\hostedtoolcache\windows\Python\*|
+| Cache d’outils PyPy    | /opt/hostedtoolcache/PyPy/*    | /Users/runner/hostedtoolcache/PyPy/*| C:\hostedtoolcache\windows\PyPy\*|
 
-Ubuntu
 
-Mac
-
-Windows
-
-**Répertoire du cache d’outils**
-
-`/opt/hostedtoolcache/*`
-
-`/Users/runner/hostedtoolcache/*`
-
-`C:\hostedtoolcache\windows\*`
-
-**Cache d’outils Python**
-
-`/opt/hostedtoolcache/Python/*`
-
-`/Users/runner/hostedtoolcache/Python/*`
-
-`C:\hostedtoolcache\windows\Python\*`
-
-**Cache d’outils PyPy**
-
-`/opt/hostedtoolcache/PyPy/*`
-
-`/Users/runner/hostedtoolcache/PyPy/*`
-
-`C:\hostedtoolcache\windows\PyPy\*`
 
 Si vous utilisez un exécuteur auto-hébergé, vous pouvez configurer l’exécuteur afin qu’il utilise l’action `setup-python` pour gérer vos dépendances. Pour plus d’informations, consultez [Utilisation de setup-python avec un exécuteur auto-hébergé](https://github.com/actions/setup-python#using-setup-python-with-a-self-hosted-runner) dans le fichier README `setup-python`.
 

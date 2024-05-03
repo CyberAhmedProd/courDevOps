@@ -43,7 +43,7 @@ GitHub fournit un flux de travail de départ pour Python qui devrait fonctionner
     
 2.  Sous le nom de votre dépôt, cliquez sur **Actions**.
     
-    ![Capture d’écran des onglets du référentiel « github/docs ». L’onglet « Actions » est mis en surbrillance avec un encadré orange.](/assets/cb-15465/images/help/repository/actions-tab-global-nav-update.png)
+    ![Capture d’écran des onglets du référentiel « github/docs ». L’onglet « Actions » est mis en surbrillance avec un encadré orange.](images/actions-tab-global-nav-update.png)
     
 3.  Si vous disposez déjà d’un workflow dans votre dépôt, cliquez sur **Nouveau workflow**.
     

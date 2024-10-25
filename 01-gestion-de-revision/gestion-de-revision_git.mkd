@@ -165,15 +165,15 @@ Pour récupéré un dépôt existant nous devons utiliser la commande **git clon
 
 Ceci est une particularité important car contrairement à un système de contrôle de révision centralisé quand nous allons interroger l'historique d'un fichier Git n'interroge pas le serveur centrale, mais consulte ça copie local.
 
-Passons à l'étape pratique avec la récupération du dépôt que j'utilise pour la préparation de cette formation disponible sur [GitHub](https://github.com/x3rus). 
+Passons à l'étape pratique avec la récupération du dépôt que j'utilise pour la préparation de cette formation disponible sur [GitHub](https://github.com/CyberAhmedProd). 
 
 1. Vous positionnez dans un répertoire qui contiendra le dépôt
 2. Utilisation de la commande **git clone** pour faire l'extraction.
 
-        $ git clone https://github.com/x3rus/training.git
+        $ git clone https://github.com/CyberAhmedProd/courDevOps.git
 3. Ceci aura pour effet de créer un répertoire training dans le répertoire courant, si vous désirez avoir un autre nom il faut passez en paramètre le nom du répertoire distant telle que démontré ci-dessous, ceci va créer le répertoire formation.
 
-        $ git clone https://github.com/x3rus/training.git formation
+        $ git clone https://github.com/CyberAhmedProd/courDevOps.git formation
 4. Tous comme lors de l'initialisation du dépôt local vous aurez un répertoire **.git** dans le répertoire training ou formation contenant l'information du dépôt avec l'ensemble de l'historique des fichiers versionnés .
 
 Dans l'exemple ci-dessus je fais la démonstration avec un dépôt public la commande est équivalente lors de l'utilisation d'un dépôt privé , git clone vous demandera un nom d'utilisateur et mot de passe .

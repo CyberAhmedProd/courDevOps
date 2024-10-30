@@ -235,7 +235,7 @@ Le nom de l'utilisateur ayant fait les __commits__ sera maintenant __John Doe__ 
 
 ### <a name="setup_editor" />Configuration de l'éditeur
 
-En plus de s'identifier il est important d'avoir son éditeur préféré ! Donc **VIM** ou **emacs**, nous nous battrons pour dire qui est le meilleur éditeur :P. Par défaut git choisi le bon , donc **VIM**, pour les personnes qui désire avoir emacs voici l'instruction :
+En plus de s'identifier il est important d'avoir son éditeur préféré ! Donc **VIM** ou **emacs**, nous nous battrons pour dire qui est le meilleur éditeur . Par défaut git choisi le bon , donc **VIM**, pour les personnes qui désire avoir emacs voici l'instruction :
 
         $ git config --global core.editor emacs 
 
@@ -396,7 +396,7 @@ Pour les personnes qui utilisent déjà Git maintenant vous savez pourquoi vous 
 
 ### <a name="ignore_files" />Ignore files
 
-C'est sympathique que Git nous indique les fichiers qui ne sont pas indexé ou non révisionné, cependant il est possible que des fichiers se trouve dans le répertoire mais que l'on désire pas avoir dans le dépôt. Les raisons sont nombreuses , à commencer parce que l'on a pas envie :P ou c'est des fichiers qui sont généré lors de l'utilisation , telle que les fichiers __.swp__ de Vim , les fichiers __.so__  lors de la compilation du programmes ... 
+C'est sympathique que Git nous indique les fichiers qui ne sont pas indexé ou non révisionné, cependant il est possible que des fichiers se trouve dans le répertoire mais que l'on désire pas avoir dans le dépôt. Les raisons sont nombreuses , à commencer parce que l'on a pas envie  ou c'est des fichiers qui sont généré lors de l'utilisation , telle que les fichiers __.swp__ de Vim , les fichiers __.so__  lors de la compilation du programmes ... 
 
 Pour corriger le problème nous pouvons définir un fichier nommé **.gitignore**, voici la structure:
 
@@ -657,7 +657,7 @@ Je ne dis pas que ceux nommé ci-dessus son les meilleurs pour le moment personn
 
 ### <a name="roll_back" />Retour arrière
 
-Un autre point avantageux avec l'utilisation d'un gestionnaire de révision est le coté révision :P et la possibilité d'avoir un retour arrière. Ceci est un filet de sécurité important ! Je vous conseil fortement d'être confortable avec votre système de gestionnaire de révision pour les retour arrière, ceci sera un atout majeur pour vous.
+Un autre point avantageux avec l'utilisation d'un gestionnaire de révision est le coté révision  et la possibilité d'avoir un retour arrière. Ceci est un filet de sécurité important ! Je vous conseil fortement d'être confortable avec votre système de gestionnaire de révision pour les retour arrière, ceci sera un atout majeur pour vous.
 Bon fini le blabla on y va dans le vif du sujet.
 
 Débutons avec la visualisation de l'état de notre dépôt (__glpi-nwipe__):
@@ -716,7 +716,7 @@ Avec la commande **git commit --amend** je vais pourvoir **REFAIRE** mon __commi
     
 ##### <a name="cancel_change" />Annulation des modifications d'un fichier
 
-Autre situation très connu, on travail sur un fichier du dépôt puis finalement le résultat est pire qu'a l'origine :P. Il y a des jours comme ça, finalement on se dit le fichier d'origine été mieux. Il est possible **avant** de faire son __commit__ de reprendre le fichier original avec la commande **git checkout**.
+Autre situation très connu, on travail sur un fichier du dépôt puis finalement le résultat est pire qu'a l'origine . Il y a des jours comme ça, finalement on se dit le fichier d'origine été mieux. Il est possible **avant** de faire son __commit__ de reprendre le fichier original avec la commande **git checkout**.
 
         $ vim README.md
         $ head README.md
@@ -780,7 +780,7 @@ Nous devons __commiter__ le changement pour qu'il soit tout de même inscrit dan
         2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
         84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
 
-Bon voyons à présent **revert** si c'est vraiment mieux :P.
+Bon voyons à présent **revert** si c'est vraiment mieux .
 
 #### <a name="revert" />Revert
 
@@ -942,7 +942,7 @@ On voit bien que  **fichierC** fut modifier mais pas A , qui a conservé le cont
         2e1ce9386472407c2d2f15a2aa13532aa79ce2d7  Ajout du fichier C
         84f8cd1340aade4b38310c838d3122589c3dd7c3  Initialisation  , avec fichier A et B
 
-Simple mais faut ce rappeler des commandes :P, toujours le même secret pour s'en rappeler l'utiliser régulièrement :D.
+Simple mais faut ce rappeler des commandes , toujours le même secret pour s'en rappeler l'utiliser régulièrement :D.
 
 ## <a name="branch" />Manipulation de branche
 
@@ -1053,7 +1053,7 @@ Vous recevez une demande pour une amélioration requise dans la prochaine versio
 
 ![utilisation_des_branches_2.png](./imgs/utilisation_des_branches_2.png)
 
-Comme toujours on ne vous laisse pas tranquille sur vos projets :P, on vient vous signaler un problème à changer en production . Avec Git, vous n'avez pas besoin de déployer les modifications déjà validées pour **iss53** avec les correctifs du problème et vous n'avez pas non plus à suer pour éliminer ces modifications avant de pouvoir appliquer les correctifs du problème en production. Tout ce que vous avez à faire, c'est simplement rebasculer sur la branche **master**. Prendre note qu'il faudra __commiter__ vos changement dans la branche **iss53** avant de faire le changement.
+Comme toujours on ne vous laisse pas tranquille sur vos projets , on vient vous signaler un problème à changer en production . Avec Git, vous n'avez pas besoin de déployer les modifications déjà validées pour **iss53** avec les correctifs du problème et vous n'avez pas non plus à suer pour éliminer ces modifications avant de pouvoir appliquer les correctifs du problème en production. Tout ce que vous avez à faire, c'est simplement rebasculer sur la branche **master**. Prendre note qu'il faudra __commiter__ vos changement dans la branche **iss53** avant de faire le changement.
 
         $ git checkout master
         Switched to branch "master"
@@ -1209,7 +1209,7 @@ Voici un exemple de la visualisation :
 Dans la situation présente j'ai :
 
 * __github__ : qui est mon dépôt publique sur internet où tout le monde peut visualiser mon travaille
-* __origin__ : ceci est mon serveur [gitlab](https://about.gitlab.com/) , ceci est une version libre de __github__ , ça me permet d'avoir une nombre illimité de dépôt privé.
+* __origin__ : ceci est mon serveur [github](https://about.gitlab.com/) , ceci est une version libre de __github__ , ça me permet d'avoir une nombre illimité de dépôt privé.
 
 Dans les 2 cas c'est la même configuration pour extraire (__fetch__) et pousser (__push__) les fichiers .
 
@@ -1314,7 +1314,7 @@ J'ai omis certaine fonctionnalité car pour le moment je ne les utilises raremen
 
 * __Tags__/étiquetage : http://git-scm.com/book/fr/v1/Les-bases-de-Git-%C3%89tiquetage
 * __spares checkout__/ extraire un sous répertoire  : http://stackoverflow.com/questions/4114887/is-it-possible-to-do-a-sparse-checkout-without-checking-out-the-whole-repository
-* submodules/inclure des dépôt git dans d'autre git :P : https://git-scm.com/book/fr/v1/Utilitaires-Git-Sous-modules
+* submodules/inclure des dépôt git dans d'autre git : https://git-scm.com/book/fr/v1/Utilitaires-Git-Sous-modules
 
 
 # <a name="ref" />Référence : 

@@ -12,6 +12,7 @@ weight: 1040
 
 - Pour bien comprendre qu'il ne s'agit que de convertir des options de commande Docker en YAML, un site vous permet de convertir une commande `docker run` en fichier Docker Compose : <https://www.composerize.com/>
 
+- Le "langage" de Docker Compose : [la documentation du langage (DSL) des compose-files](https://docs.docker.com/compose/compose-file/) est essentielle.
 ---
 
 # A quoi ça ressemble, YAML ?
@@ -60,8 +61,6 @@ weight: 1040
 ## Ok, lançons Wordpress puis faisons un cluster ELK avec filebeats et les labels pour y envoyer les logs nginx + wordpress. -->
 
 ```yml
-version: 3
-
 services:
   postgres:
     image: postgres:10
@@ -107,24 +106,10 @@ networks:
 
 Un deuxième exemple :
 ```yaml
-version: "3.3"
 services:
-
-  mysql:
-    container_name: mysqlpourwordpress
-    environment:
-      - MYSQL_ROOT_PASSWORD=motdepasseroot
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress
-      - MYSQL_PASSWORD=monwordpress
-    networks:
-    - wordpress
-    image: "mysql:5.7"
-
   wordpress:
     depends_on:
-      - mysql
-    container_name: wordpressavecmysql
+      - mysqlpourwordpress
     environment:
       - "WORDPRESS_DB_HOST=mysqlpourwordpress:3306"
       - WORDPRESS_DB_PASSWORD=monwordpress
@@ -137,11 +122,25 @@ services:
     volumes:
       - wordpress_config:/var/www/html/
 
+  mysqlpourwordpress:
+    image: "mysql:5.7"
+    environment:
+      - MYSQL_ROOT_PASSWORD=motdepasseroot
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=monwordpress
+    networks:
+    - wordpress
+    volumes:
+      - wordpress_data:/var/lib/mysql/
+
 networks:
   wordpress:
 
 volumes:
   wordpress_config:
+  wordpress_data:
+
 ```
 
 ---
@@ -158,7 +157,7 @@ Les commandes suivantes sont couramment utilisées lorsque vous travaillez avec 
 
 - `run` fait tourner un conteneur pour exécuter une commande unique. Cela aura aussi pour effet de faire tourner tout conteneur décrit dans `depends_on`, à moins que l'argument `--no-deps` ne soit donné.
 
-- `logs` affiche les logs. De façon générale la sortie des logs est colorée et agrégée pour les conteneurs gérés par Compose.
+- `logs` affiche les logs. De façon générale la sortie des logs est colorée et agrégée pour les conteneurs gérés par Compose. `logs -f` pour suivre les logs en temps réel.
 
 - `stop` arrête les conteneurs sans les enlever.
 
@@ -170,7 +169,7 @@ Les commandes suivantes sont couramment utilisées lorsque vous travaillez avec 
 
 - N'hésitez pas à passer du temps à explorer les options et commandes de `docker-compose`.
 - [La documentation du langage (DSL) des compose-files](https://docs.docker.com/compose/compose-file/) est essentielle.
-- Cette documentation indique aussi les différences entre les mots-clés supportés dans la version 2 et la version 3 des fichiers Docker Compose.
+
 - il est aussi possible d'utiliser des variables d'environnement dans Docker Compose : se référer au [mode d'emploi](https://docs.docker.com/compose/compose-file/#variable-substitution) pour les subtilités de fonctionnement
 
 ---
@@ -179,6 +178,6 @@ Les commandes suivantes sont couramment utilisées lorsque vous travaillez avec 
 
 - Certaines applications microservice peuvent avoir potentiellement des dizaines de petits conteneurs spécialisés. Le service devient alors difficile à lire dans le compose file.
 
-- Il est possible de visualiser l'architecture d'un fichier Docker Compose en utilisant [docker-compose-viz](https://github.com/pmsipilot/docker-compose-viz)
+- Il est possible de visualiser l'architecture d'un fichier Docker Compose en utilisant [docker-compose-viz-mermaid](https://github.com/derlin/docker-compose-viz-mermaid)
 
 - Cet outil peut être utilisé dans un cadre d'intégration continue pour produire automatiquement la documentation pour une image en fonction du code.

@@ -1,5 +1,5 @@
 ---
-title: TP 3bis - Volumes
+title: TP 3b - Volumes
 weight: 1032
 ---
 
@@ -10,7 +10,8 @@ weight: 1032
 # Redis need to restart to update from file stored in volume.
 -->
 
-## Portainer
+{{% expand "Portainer" %}}
+
 
 <!-- - Pour visualiser aisément notre environnement docker au fur et à mesure de nos TPs nous allons charger une interface web d'administration docker appelée `portainer` et qui s'installe elle-même avec Docker. -->
 
@@ -25,40 +26,47 @@ docker run --detach --name portainer \
     portainer/portainer-ce
 ```
 
-<!-- - Remarque sur la commande précédente : pour que Portainer puisse fonctionner et contrôler Docker lui-même depuis l'intérieur du conteneur il est nécessaire de lui donner accès au socket de l'API Docker de l'hôte grâce au paramètre `--mount` ci-dessus. -->
+- Remarque sur la commande précédente : pour que Portainer puisse fonctionner et contrôler Docker lui-même depuis l'intérieur du conteneur il est nécessaire de lui donner accès au socket de l'API Docker de l'hôte grâce au paramètre `--volume` ci-dessus.
 
-<!-- - Visitez ensuite la page [http://localhost:9000](http://localhost:9000) pour accéder à l'interface.
+- Visitez ensuite la page [http://localhost:9000](http://localhost:9000) pour accéder à l'interface.
 - Créez votre user admin avec le formulaire.
 - Explorez l'interface de Portainer.
-- Créez un conteneur -->
 
+{{% /expand %}}
 
 # Partie 2 : Volumes Docker
 
 ## Introduction aux volumes
 
-- Pour comprendre ce qu'est un volume, lançons un conteneur en mode interactif et associons-y le dossier `/tmp/data` de l'hôte au dossier `/data` sur le conteneur :
+- Pour comprendre ce qu'est un volume, lançons un conteneur en mode interactif et associons-y le dossier `/tmp/dossier-hote` de l'hôte au dossier `/dossier-conteneur` sur le conteneur :
+
 ```bash
-docker run -it -v /tmp/data:/data ubuntu /bin/bash
+docker run -it -v /tmp/dossier-hote:/dossier-conteneur ubuntu /bin/bash
 ```
 
 - Dans le conteneur, navigons dans ce dossier et créons-y un fichier :
+
 ```bash
-cd /data/
-touch testfile
+cd /dossier-conteneur/
+touch test-depuis-conteneur
 ```
 
 - Sortons ensuite de ce conteneur avec la commande `exit`
+
 ```bash
 exit
 ```
 
-- Après être sorti·e du conteneur, listons le contenu du dossier **sur l'hôte** avec la commande suivante ou avec le navigateur de fichiers d'Ubuntu : 
+- Après être sorti·e du conteneur, listons le contenu du dossier **sur l'hôte** avec la commande suivante ou avec le navigateur de fichiers d'Ubuntu :
+
 ```bash
-ls /tmp/data/
+ls /tmp/dossier-hote/
 ```
 
-Le fichier `testfile` a été crée par le conteneur au dossier que l'on avait connecté grâce à `-v /tmp/data:/data`
+Le fichier `test-depuis-conteneur` a été créé par le conteneur au dossier que l'on avait connecté grâce à `-v /tmp/dossier-hote:/dossier-conteneur`
+
+- Tentez de créer un fichier **depuis l'hôte** dans ce dossier. Que se passe-t-il ? Que faut-il faire ? Pourquoi ?
+
 
 ## L'app `moby-counter`, Redis et les volumes
 
@@ -70,96 +78,35 @@ Pour ne pas interférer avec la deuxième partie du TP :
 <!-- - Lancez `docker volume ls` pour vérifier qu'aucun volume n'est créé (sauf `portainer_data` si vous utilisez encore Portainer) sinon supprimez-les avec `docker volume rm --force <id_volume>` -->
 - Lancez aussi `docker network prune` pour nettoyer les réseaux inutilisés
 
-Passons à l'exploration des volumes:
 
-- Recréez le réseau `moby-network` et les conteneurs `redis` et `moby-counter` à l'intérieur :
+### Volumes nommés
 
-```bash
-docker network create moby-network
-docker run -d --name redis --network moby-network redis
-docker run -d --name moby-counter --network moby-network -p 8000:80 russmckendrick/moby-counter
-```
-
-- Visitez votre application dans le navigateur. **Faites un motif reconnaissable en cliquant.**
-
-<!-- - Recréez le conteneur `redis` dans le réseau `moby-network` : 
-```bash
-docker run -d --name redis --network moby-network redis
-```
-
-- Rechargez la page. Que s'est-il passé ? -->
-
-### Récupérer un volume d'un conteneur supprimé
-
-- supprimez le conteneur `redis` : `docker stop redis` puis `docker rm redis`
-
-- Visitez votre application dans le navigateur. Elle est maintenant déconnectée de son backend.
-
-- Avons-nous vraiment perdu les données de notre conteneur précédent ? Non !
-  Le Dockerfile pour l'image officielle Redis ressemble à ça :
-
-{{< highlight Dockerfile "hl_lines=26" >}}
-FROM alpine:3.5
-
-RUN addgroup -S redis && adduser -S -G redis redis
-RUN apk add --no-cache 'su-exec>=0.2'
-ENV REDIS_VERSION 3.0.7
-ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-3.0.7.tar.gz
-ENV REDIS_DOWNLOAD_SHA e56b4b7e033ae8dbf311f9191cf6fdf3ae974d1c
-RUN set -x \
-    && apk add --no-cache --virtual .build-deps \
-        gcc \
-        linux-headers \
-        make \
-        musl-dev \
-        tar \
-    && wget -O redis.tar.gz "$REDIS_DOWNLOAD_URL" \
-    && echo "$REDIS_DOWNLOAD_SHA *redis.tar.gz" | sha1sum -c - \
-    && mkdir -p /usr/src/redis \
-    && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
-    && rm redis.tar.gz \
-    && make -C /usr/src/redis \
-    && make -C /usr/src/redis install \
-    && rm -r /usr/src/redis \
-    && apk del .build-deps
-
-RUN mkdir /data && chown redis:redis /data
-VOLUME /data
-WORKDIR /data
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
-ENTRYPOINT ["docker-entrypoint.sh"]
-EXPOSE 6379
-CMD [ "redis-server" ]
-{{< / highlight >}}
-
-Notez que, vers la fin du fichier, il y a une instruction `VOLUME` ; cela signifie que lorque notre conteneur a été lancé, un volume "caché" a effectivement été créé par Docker.
-
-Beaucoup de conteneurs Docker sont des applications *stateful*, c'est-à-dire qui stockent des données. Automatiquement ces conteneurs créent des volument anonymes en arrière plan qu'il faut ensuite supprimer manuellement (avec rm ou prune).
-
-- Inspectez la liste des volumes (par exemple avec Portainer) pour retrouver l'identifiant du volume caché. Normalement il devrait y avoir un volume `portainer_data` (si vous utilisez Portainer) et un volume anonyme avec un hash.
-
-- Créez un nouveau conteneur redis en le rattachant au volume redis "caché" que vous avez retrouvé (en copiant l'id du volume anonyme) :
-  `docker container run -d --name redis -v <volume_id>:/data --network moby-network redis:alpine`
-
-- Visitez la page de l'application. Normalement un motif de logos _moby_ d'une précédente session devrait s'afficher (après un délai pouvant aller jusqu'à plusieurs minutes)
-
-- Affichez le contenu du volume avec la commande : `docker exec redis ls -lha /data`
-
-### Bind mounting
-
-Finalement, nous allons recréer un conteneur avec un volume qui n'est pas anonyme.
-
-En effet, la bonne façon de créer des volumes consiste à les créer manuellement (volumes nommés) : `docker volume create redis_data`.
-
-- Supprimez l'ancien conteneur `redis` puis créez un nouveau conteneur attaché à ce volume nommé : `docker container run -d --name redis -v redis_data:/data --network moby-network redis:alpine`
 
 Lorsqu'un répertoire hôte spécifique est utilisé dans un volume (la syntaxe `-v HOST_DIR:CONTAINER_DIR`), elle est souvent appelée **bind mounting**.
 C'est quelque peu trompeur, car tous les volumes sont techniquement "bind mounted". La différence, c'est que le point de montage est explicite plutôt que caché dans un répertoire géré par Docker.
 
+Nous allons recréer un conteneur avec cette fois-ci un volume nommé.
+
+En effet, la bonne façon de créer des volumes consiste à les créer manuellement dans un premier temps (volumes nommés), puis d'y associer un conteneur : `docker volume create redis_data`.
+
 - Lancez `docker volume inspect redis_data`.
 
-<!-- ### Deux conteneurs Redis sur un seul volume
+- Créez le conteneur `moby-counter` à l'intérieur :
+
+```bash
+docker network create moby-network
+docker run -d --network moby-network --name moby-counter -p 8000:80 russmckendrick/moby-counter
+```
+
+- Puis, à l'aide de la documentation disponible sur le Docker Hub, trouvons le point de montage où connecter un conteneur Redis pour que ses données persistent à la suppression du conteneur.
+- créons le conteneur Redis connecté à notre volume nommé (il faut remplacer `__VOLUME__:__POINT_DE_MONTAGE__` par les bonnes informations) :
+
+```bash
+docker run -d --name redis --network moby-network --volume __VOLUME__:__POINT_DE_MONTAGE__ redis
+```
+
+
+### (facultatif) Deux conteneurs Redis sur un seul volume
 
 - Créez un réseau `moby-network2` et ajoutez un deuxième conteneur `redis2` qui va partager les même données que le premier :
   - situé à l'intérieur du nouveau réseau (`moby-network2`) comme à la partie précédent.
@@ -175,7 +122,78 @@ Le read-only est nécessaire pour que les deux Redis n'écrivent pas de façon c
 
 - Ajoutez une deuxième instance de l'application dans le deuxième réseau connectée à ce nouveau Redis.
 
-- Visitez la deuxième application : vous devriez voir également le motif de moby apparaître. -->
+- Visitez la deuxième application : vous devriez voir également le motif de moby apparaître.
+
+
+### Récupérer un volume d'un conteneur supprimé
+
+- supprimez le conteneur `redis` : `docker stop redis` puis `docker rm redis`
+
+
+- recréons le conteneur `redis`, mais **par erreur nous allons oublier de le connecter à un volume à la création** :
+
+```bash
+docker run -d --name redis --network moby-network redis
+docker run -d --name moby-counter --network moby-network -p 8000:80 russmckendrick/moby-counter
+```
+
+- Visitez votre application dans le navigateur. **Faites un motif reconnaissable en cliquant.**
+
+- supprimez le nouveau conteneur `redis` : `docker stop redis` puis `docker rm redis`
+
+- Visitez votre application dans le navigateur. Elle est maintenant déconnectée de son backend.
+
+- Avons-nous vraiment perdu les données de notre conteneur précédent ? Non !
+  Le Dockerfile pour l'image officielle Redis ressemble à ça :
+
+{{< highlight Dockerfile "hl_lines=26" >}}
+FROM alpine:3.5
+
+RUN addgroup -S redis && adduser -S -G redis redis
+RUN apk add --no-cache 'su-exec>=0.2'
+ENV REDIS_VERSION 3.0.7
+ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-3.0.7.tar.gz
+ENV REDIS_DOWNLOAD_SHA e56b4b7e033ae8dbf311f9191cf6fdf3ae974d1c
+RUN set -x \
+ && apk add --no-cache --virtual .build-deps \
+ gcc \
+ linux-headers \
+ make \
+ musl-dev \
+ tar \
+ && wget -O redis.tar.gz "$REDIS_DOWNLOAD_URL" \
+    && echo "$REDIS_DOWNLOAD_SHA \*redis.tar.gz" | sha1sum -c - \
+ && mkdir -p /usr/src/redis \
+ && tar -xzf redis.tar.gz -C /usr/src/redis --strip-components=1 \
+ && rm redis.tar.gz \
+ && make -C /usr/src/redis \
+ && make -C /usr/src/redis install \
+ && rm -r /usr/src/redis \
+ && apk del .build-deps
+
+RUN mkdir /data && chown redis:redis /data
+VOLUME /data
+WORKDIR /data
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
+ENTRYPOINT ["docker-entrypoint.sh"]
+EXPOSE 6379
+CMD [ "redis-server" ]
+{{< / highlight >}}
+
+Notez que, vers la fin du fichier, il y a une instruction `VOLUME` ; cela signifie que lorque notre conteneur a été lancé, un volume "caché" a effectivement été créé par Docker.
+
+Beaucoup de conteneurs Docker sont des applications _stateful_, c'est-à-dire qui stockent des données. Automatiquement ces conteneurs créent des volument anonymes en arrière plan qu'il faut ensuite supprimer manuellement (avec rm ou prune).
+
+- Inspectez la liste des volumes (par exemple avec Portainer) pour retrouver l'identifiant du volume caché. Normalement il devrait y avoir un volume `portainer_data` (si vous utilisez Portainer) et un volume anonyme avec un hash.
+
+- Créez un nouveau conteneur redis en le rattachant au volume redis "caché" que vous avez retrouvé (en copiant l'id du volume anonyme) :
+  `docker container run -d --name redis -v <volume_id>/_data:/data --network moby-network redis:alpine`
+
+- Visitez la page de l'application. Normalement un motif de logos _moby_ d'une précédente session devrait s'afficher (après un délai pouvant aller jusqu'à plusieurs minutes)
+
+- Affichez le contenu du volume avec la commande : `docker exec redis ls -lha /data`
+
 
 ### Supprimer les volumes et réseaux
 
@@ -189,15 +207,16 @@ Comme les réseaux et volumes n'étaient plus attachés à des conteneurs en fon
 
 ### Facultatif : utiliser `VOLUME` avec `microblog`
 
-- Rendez-vous dans votre répertoire racine en tapant `cd`.
-- Après être entré·e dans le repo `microblog` grâce à `cd microblog`, récupérez une version déjà dockerisée de l'app en chargeant le contenu de la branche Git `tp2-dockerfile` en faisant `git checkout tp2-dockerfile -- Dockerfile`.
+<!-- - Rendez-vous dans votre répertoire racine en tapant `cd`.
+- Après être entré·e dans le repo `microblog` grâce à `cd microblog`, récupérez une version déjà dockerisée de l'app en chargeant le contenu de la branche Git `tp2-dockerfile` en faisant `git checkout tp2-dockerfile -- Dockerfile`. -->
 
-- Si vous n'aviez pas encore le repo `microblog` :
+- Clonons le repo `microblog` ailleurs :
+
 ```bash
-git clone https://github.com/uptime-formation/microblog/
-cd microblog
-git checkout tp2-dockerfile
+git clone https://github.com/uptime-formation/microblog/ --branch tp2-dockerfile microblog-volume
 ```
+
+- Ouvrons ça avec VSCode : `code microblog-volume`
 
 - Lire le `Dockerfile` de l'application `microblog`.
 
@@ -210,20 +229,17 @@ Nous allons faire apparaître le volume Docker comme un dossier à l'emplacement
 ENV DATABASE_URL=sqlite:////data/app.db
 ```
 
-- Ajouter au `Dockerfile` une instruction `VOLUME` pour stocker la base de données SQLite de l'application. 
-
-{{% expand "Indice :" %}}
-
-Dans le conteneur, le chemin de la base de données est :
+Cela indique que l'on va demander à Python d'utiliser SQLite pour stocker la base de données comme un unique fichier au format `.db` (SQLite) dans un dossier accessible par le conteneur. On a en fait indiqué à l'app Python que chemin de la base de données est :
 `/data/app.db`
 
-{{% /expand %}}
+- Ajouter au `Dockerfile` une instruction `VOLUME` pour stocker la base de données SQLite de l'application.
 
 {{% expand "Solution :" %}}
 
 Voici le `Dockerfile` complet :
+
 ```Dockerfile
-FROM python:3-alpine
+FROM python:3.9-alpine
 
 COPY ./requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
@@ -232,7 +248,7 @@ ENV FLASK_APP microblog.py
 COPY ./ /microblog
 WORKDIR /microblog
 
-ENV APP_ENVIRONMENT PROD
+ENV CONTEXT PROD
 
 EXPOSE 5000
 
@@ -248,7 +264,8 @@ CMD ["./boot.sh"]
 - Vérifier que le volume nommé est bien utilisé en branchant un deuxième conteneur `microblog` utilisant le même volume nommé.
 
 ---
-<!-- 
+
+<!--
 La ligne de code Python qui nous permet de déterminer comment l'app utilise le volume du Dockerfile est la suivante :
 
 `config.py` :
@@ -260,8 +277,6 @@ SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
 ``` -->
 
 <!-- , la variable d'environnement `DATABASE_URL`, qui indique à l'app où est la base de données, doit donc indiquer un fichier présent dans le dossier monté. -->
-
-
 
 <!-- Marquer solution -->
 

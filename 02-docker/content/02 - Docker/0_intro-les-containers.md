@@ -73,7 +73,7 @@ Docker permet de faire des "quasi-machines" avec des performances proches du nat
 
 ---
 
-# Bénéfices par rapport aux machines virtuelles
+# Limitations des Machines Virtuelles face aux Conteneurs
 
 VM et conteneurs proposent une flexibilité de manipulation des ressources de calcul mais les machines virtuelles sont trop lourdes pour être multipliées librement :
 
